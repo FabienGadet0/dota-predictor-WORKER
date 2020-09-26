@@ -18,8 +18,8 @@ class Csv_generator(Api_handler):
         super().__init__(api_type)
 
     def generate_meta(self):
-        all_func = [self.generate_players_w_heroes_synergy, self.generate_players_peers, self.generate_teams, self.generate_heroes_meta,self.generate_heroes_matchups,self.generate_heroes_matchups_from_stratz]
-        # all_func = [self.generate_heroes_matchups,self.generate_heroes_matchups_from_stratz]
+        all_func = [self.generate_players_w_heroes_synergy, self.generate_teams, self.generate_heroes_meta,self.generate_heroes_matchups,self.generate_heroes_matchups_from_stratz]
+        # all_func = [self.generate_players_w_heroes_synergy, self.generate_players_peers, self.generate_teams, self.generate_heroes_meta,self.generate_heroes_matchups,self.generate_heroes_matchups_from_stratz]
         pool = Pool(len(all_func))
         for func in all_func:
             pool.apply_async(func)
@@ -131,7 +131,9 @@ class Csv_generator(Api_handler):
         pd.DataFrame(self.raw_query("teams/")
                      ).to_csv('./data/all_teams.csv', index=False)
 
-    def generate_matches(self, days_ago=5, amount_to_scrap=days_ago * 100, start_at_match_id=0):
+    def generate_matches(self, days_ago=5, amount_to_scrap=0, start_at_match_id=0):
+        if amount_to_scrap == 0:
+            amount_to_scrap = days_ago * 100
         if start_at_match_id != 0:
             df = pd.DataFrame(self.exec_query(
                 additional=f'?less_than_match_id={start_at_match_id}'))
@@ -283,7 +285,7 @@ def generate_games(days_ago=5, to_scrap=200, start_at_match_id=0):
     else:
         c.clean_processed_matches()
         log('SUCCESS', 'DONE')
-    return "OK"
+    return "OK" 
 
 
 def generate_meta():
@@ -292,3 +294,8 @@ def generate_meta():
 
     # generate_games(days_ago=2)
     # generate_meta()
+    
+    
+    
+if __name__ == "__main__":
+     generate_games(days_ago=2)
