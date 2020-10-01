@@ -23,9 +23,11 @@ def make_dataset(df, is_prediction, additional_values=[]):
             tmp['last_update_time'] = game.last_update_time
         else:
             tmp['winner'] = game.winner
-            tmp['game_version'] = game.version
-
-        tmp['start_time'] = str(datetime.fromtimestamp(game['start_time']))
+            tmp['patch'] = game.version
+        try :
+            tmp['start_time'] = str(datetime.fromtimestamp(game['start_time']))
+        except KeyError:
+            tmp['last_update_time'] = game['last_update_time']
         
         for optional_value in additional_values:
             if (optional_value in game.keys()):
@@ -56,21 +58,21 @@ def make_dataset(df, is_prediction, additional_values=[]):
         dataset = dataset.append(tmp, ignore_index=True)
     if not dataset.empty:
         if is_prediction:
-            return dataset[['match_id', 'start_time', 'dire_team', 'dire_team_heroes_meta_points',
+            return dataset[['match_id',  'dire_team', 'dire_team_heroes_meta_points',
                              'dire_team_matchup_score', 'dire_team_synergy_with', 'dire_team_synergy_against', 'dire_team_winrate_with', 'dire_team_winrate_against',
                               'dire_team_synergy_score',  'dire_team_rating', 'dire_team_winrate',
                              'radiant_team',
                             'radiant_team_heroes_meta_points',
                              'radiant_team_matchup_score', 'radiant_team_synergy_with', 'radiant_team_synergy_against', 'radiant_team_winrate_with', 'radiant_team_winrate_against',
                             'radiant_team_synergy_score',  'radiant_team_rating',
-                            'radiant_team_winrate', 'inserted_date', 'last_update_time', 'radiant_team_peers_score',  'dire_team_peers_score']]
-
-        return dataset[['match_id', 'start_time','winner', 'game_version', 'dire_team', 'dire_team_heroes_meta_points',
+                            'radiant_team_winrate',  'last_update_time', 'radiant_team_peers_score',  'dire_team_peers_score']]
+        dataset["source"] = "openDota"
+        return dataset[['match_id', 'start_time','winner', 'patch', 'dire_team', 'dire_team_heroes_meta_points',
                          'dire_team_matchup_score', 'dire_team_synergy_with', 'dire_team_synergy_against', 'dire_team_winrate_with', 'dire_team_winrate_against',
                          'dire_team_synergy_score',  'dire_team_rating', 'dire_team_winrate',
                          'radiant_team',
                         'radiant_team_heroes_meta_points',
                          'radiant_team_matchup_score', 'radiant_team_synergy_with', 'radiant_team_synergy_against', 'radiant_team_winrate_with', 'radiant_team_winrate_against',
                          'radiant_team_synergy_score',  'radiant_team_rating',
-                        'radiant_team_winrate', 'patch',  'radiant_team_peers_score',  'dire_team_peers_score',  'game_mode', 'dire_score', 'radiant_score', 'duration', 'first_blood_time']]
+                        'radiant_team_winrate',   'radiant_team_peers_score',  'dire_team_peers_score',  'game_mode', 'dire_score', 'radiant_score', 'duration', 'first_blood_time']]
     return pd.DataFrame()

@@ -10,6 +10,8 @@ URL = 'https://api.opendota.com/api/'
 class Api_handler():
     def __init__(self, api_type):
         self.api_type = api_type
+        self.nb_query_done = int(os.getenv("NB_QUERY_DONE", "0"))
+        os.environ["NB_QUERY_DONE"] = str(self.nb_query_done)
 
     def generate_data(self):
         pass
@@ -22,6 +24,7 @@ class Api_handler():
         except requests.exceptions.RequestException as e:
             log('ERROR', f"Error querying :{e}")
         finally:
+            self.nb_query_done += 1
             if r.status_code == 200:
                 retry = 0
                 if to_json:
@@ -38,4 +41,5 @@ class Api_handler():
                 return [{}]
 
     def exec_query(self, mute=False, additional='', to_json=True):
+        self.nb_query_done += 1
         return self.raw_query(f"{self.api_type}{additional}", mute=mute, to_json=to_json)

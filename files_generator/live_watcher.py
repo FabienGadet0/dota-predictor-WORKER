@@ -6,7 +6,6 @@ import data_handler as data_handler
 from api_handler import Api_handler
 from logger import log
 from team import Team
-from utils import apply_weight_sum_model
 from dateutil.relativedelta import relativedelta
 import requests
 from datetime import datetime
@@ -23,6 +22,7 @@ class Live_watcher(Api_handler):
         return pd.read_json(self.exec_query(to_json=False))
 
     def parse_steam(self):
+        log("INFO", "Querying Steam api url")
         df = pd.DataFrame(requests.get(STEAM_URL).json())
 
         ready_for_dataset = self.process_live_batch_for_steam(
@@ -31,7 +31,7 @@ class Live_watcher(Api_handler):
         # ready_for_dataset['version'] = 0
         ready_for_dataset = ready_for_dataset.dropna()
         dataset = data_handler.make_dataset(ready_for_dataset, is_prediction=True, additional_values=[
-            'league_id', 'last_update_time'])
+            'league_id'])
         return dataset
 
     def process_live_batch_for_steam(self, df):
@@ -62,6 +62,7 @@ class Live_watcher(Api_handler):
                                                 radiant_team['players'])
                     data['dire_team'] = Team(dire_team,
                                              dire_team['players'])
+                    print(f" {data['match_id']} -> {data['radiant_team'].name} (radiant) vs {data['dire_team'].name} (dire) ")
                     # ? ===================
 
                     # ? Synergy scores
@@ -140,7 +141,7 @@ class Live_watcher(Api_handler):
         incoming_games = df[(df.team_id_radiant.notnull())
                             & (df.team_id_dire.notnull())]
         nb_games = len(incoming_games)
-        # incoming_games.to_csv('data/incoming_games_raw.csv', index=False)
+        incoming_games.to_csv('data/incoming_games_raw.csv', index=False)
         if nb_games > 0:
             ready_for_dataset = self.process_live_batch(
                 incoming_games)
@@ -323,18 +324,11 @@ def get_live():
     to_predict = pd.DataFrame()
     to_predict3 = l.get_current_games_stats_stratz()
     to_predict3['source'] = 'stratz'
-    to_predict = l.parse_steam()
-    to_predict['source'] = 'steam'
-    to_predict = pd.DataFrame()
+    # to_predict = l.parse_steam()
+    # to_predict['source'] = 'steam'
     to_predict2 = l.get_current_games_stats()
     to_predict2['source'] = 'openDota'
-    log('SUCCESS',
-        f'Found OpenDota : {len(to_predict2)} , stratz : {len(to_predict3)} , steam : {len(to_predict)} on live')
-    
-    df = pd.concat([to_predict, to_predict2, to_predict3]).drop_duplicates(subset="match_id")
-    df.to_csv('./data/incoming_games_dataset.csv', index=False)
-    return df
 
-
-if __name__ == "__main__":
-    get_live()
+    df = pd.concat([to_predict, to_predict2, to_predict3], sort=False).drop_duplicates(subset="match_id")
+    df.to_csv('./data/live_games.csv', index=False)
+    return len(df)

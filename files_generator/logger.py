@@ -27,7 +27,6 @@ def log(l, message):
         l = 'INFO'
     if l == 'EXCEPTION':
         raise(Exception(flag[l] + ' ' + message))
-    if os.environ['DEBUG'].lower() == 'true' or l == 'SUCCESS' or l == 'INFO':
-        if l == 'DEBUG' and os.environ['DEBUG'].lower() == 'false':
-            return
-        termcolor.cprint(flag[l] + ' ' + message, to_color[l])
+    if l == 'DEBUG' and os.getenv("DEBUG", "false").lower() != "true":
+            return 
+    termcolor.cprint(flag[l] + ' ' + message, to_color[l])

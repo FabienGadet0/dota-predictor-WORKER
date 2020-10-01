@@ -38,7 +38,7 @@ class Team():
         data = pd.read_csv('./data/all_teams.csv')
         data = data[data['team_id'] == self.team_id]
         if data.empty:
-            log('WARNING', 'cannot find more informations about the team')
+            log('DEBUG', 'cannot find more informations about the team')
         else:
             keys = data.keys()
             for key in keys:

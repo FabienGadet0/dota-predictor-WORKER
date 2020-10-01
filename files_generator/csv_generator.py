@@ -3,7 +3,7 @@ from statistics import mean
 
 import numpy as np
 import pandas as pd
-
+import os
 import data_calculation as data_calculation
 import data_handler as data_handler
 from api_handler import Api_handler
@@ -101,8 +101,8 @@ class Csv_generator(Api_handler):
                     ['heroId1', 'heroId2', 'synergy', 'wins']].rename(columns={"synergy": "synergy_against", "wins": "winrate_against"})
                 df_synergies = df_with.merge(df_vs, on=['heroId1', 'heroId2'])
                 all_matchups = all_matchups.append(df_synergies)
-            except ValueError:
-                log('DEBUG', "Cannot get matchupfromstratz " + ValueError)
+            except:
+                pass
         all_matchups.to_csv('./data/all_matchups_stratz.csv')
         log('FILE', 'Synergies finished , saved to ./data/all_matchups_stratz.csv')
 
@@ -148,9 +148,9 @@ class Csv_generator(Api_handler):
             except:
                 pass
         df['start_time'] = df['start_time'].apply(lambda x : datetime.fromtimestamp(x))
-        
         df[df['start_time'] > (datetime.now() - timedelta(days=days_ago))].to_csv('./data/all_matches.csv', index=False)
-
+        os.environ["NB_QUERY_DONE"] = str(self.nb_query_done)
+        
     def process_matches(self, number_of_match_to_process=0, mode='a+'):
         df = pd.read_csv('./data/all_matches.csv')
         dataset_size = 0
@@ -163,22 +163,25 @@ class Csv_generator(Api_handler):
         while (not df.empty):
             ready_for_dataset = self.process_batch(df[0:step].match_id)
             df = df.iloc[step:]
-
+            ready_for_dataset["source"] = "openDota"
             data_chunk = data_handler.make_dataset(
                 ready_for_dataset, is_prediction=False, additional_values=['patch', 
-                                                                           'game_mode', 'dire_score', 'radiant_score', 'duration', 'first_blood_time'])
+                                                                           'game_mode',  'source','dire_score', 'radiant_score', 'duration', 'first_blood_time'])
             dataset_size += len(data_chunk)
             if not data_chunk.empty:
-                log('SUCCESS', f"{len(data_chunk)}/{dataset_size} into file ")
+                # log('SUCCESS', f"{len(data_chunk)}/{dataset_size} into file ")
                 data_chunk['match_id'] = data_chunk['match_id'].astype(int)
                 data_chunk.to_csv('data/dataset.csv', mode=mode,
                                   header=(not mode == 'a+'), index=False)
+                mode = 'a+'
             if dataset_size >= number_of_match_to_process:
-                return (1)
-        return (0)
+                os.environ["NB_QUERY_DONE"] = str(self.nb_query_done)
+                return dataset_size
+        os.environ["NB_QUERY_DONE"] = str(self.nb_query_done)
+        return dataset_size
 
     def clean_processed_matches(self):
-        log('INFO', 'Cleaning all_matches.csv and files /dataset.csv')
+        # log('INFO', 'Cleaning all_matches.csv and files /dataset.csv')
         row_nb_last_match = 0
         df = pd.read_csv('./data/dataset.csv')
         matches = pd.read_csv(
@@ -192,11 +195,12 @@ class Csv_generator(Api_handler):
         if row_nb_last_match > 0:
             matches = matches[row_nb_last_match:]
         matches.to_csv('./data/all_matches.csv', index=False)
-        df.drop_duplicates().to_csv('./data/dataset.csv', index=False)
-        log('SUCCESS', 'Processed matches and dataset cleaned.')
+        df.drop_duplicates(subset="match_id").to_csv('./data/dataset.csv', index=False)
+        os.environ["NB_QUERY_DONE"] = str(self.nb_query_done)
 
     def process_batch(self, match_ids):
         matches = pd.DataFrame()
+        preprocess = pd.Series()
         for match_id in match_ids:
             try:
                 r = self.raw_query(f"matches/{match_id}")
@@ -254,9 +258,9 @@ class Csv_generator(Api_handler):
                         r)[['replay_url', 'patch', 'start_time', 'game_mode', 'dire_score', 'radiant_score', 'duration', 'first_blood_time']]
                     data['replay_url'] = c['replay_url']
                     data['first_blood_time'] = c['first_blood_time']
-                    data['radiant_score'] = c['radiant_score']
-                    data['duration'] = c['duration']
-                    data['dire_score'] = c['dire_score']
+                    data['radiant_score'] = int(c['radiant_score'])
+                    data['duration'] = int(c['duration'])
+                    data['dire_score'] = int(c['dire_score'])
                     data['patch'] = c['patch']
                     data['start_time'] = c['start_time']
                     data['game_mode'] = c['game_mode']
@@ -266,8 +270,8 @@ class Csv_generator(Api_handler):
                         log('DEBUG', f'New line appended {data.match_id}')
                     else:
                         log('DEBUG', f'match {match_id} incomplete')
-            except ValueError:
-                log('DEBUG', "error " + ValueError)
+            except:
+                pass
         return matches
 
 
@@ -284,18 +288,8 @@ def generate_games(days_ago=5, to_scrap=200, start_at_match_id=0):
         log("INFO", "nothing to do")
     else:
         c.clean_processed_matches()
-        log('SUCCESS', 'DONE')
-    return "OK" 
 
 
 def generate_meta():
     l = Csv_generator(api_type='proMatches')
     l.generate_meta()
-
-    # generate_games(days_ago=2)
-    # generate_meta()
-    
-    
-    
-if __name__ == "__main__":
-     generate_games(days_ago=2)
