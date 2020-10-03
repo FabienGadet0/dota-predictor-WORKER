@@ -56,7 +56,7 @@ function write(db::dbClass, df, tableName)
     _prepare_field(x::Any) = x
     _prepare_field(x::Missing) = ""
     _prepare_field(x::AbstractString) = string("\"", replace(x, "\"" => "\"\""), "\"")
-    
+
     alreadyInDb = read(db, tableName) |> DataFrame
     # toInsert = join(df, alreadyInDb, kind=:left, on=:match_id, makeunique=true)
     # toInsert = toInsert[filter(x -> !occursin("_1", x), names(toInsert))]

@@ -13,12 +13,14 @@ import requests
 from os import path
 from multiprocessing import Pool
 
+
 class Csv_generator(Api_handler):
     def __init__(self, api_type):
         super().__init__(api_type)
 
     def generate_meta(self):
-        all_func = [self.generate_players_w_heroes_synergy, self.generate_teams, self.generate_heroes_meta,self.generate_heroes_matchups,self.generate_heroes_matchups_from_stratz]
+        all_func = [self.generate_players_w_heroes_synergy, self.generate_teams, self.generate_heroes_meta,
+                    self.generate_heroes_matchups, self.generate_heroes_matchups_from_stratz]
         # all_func = [self.generate_players_w_heroes_synergy, self.generate_players_peers, self.generate_teams, self.generate_heroes_meta,self.generate_heroes_matchups,self.generate_heroes_matchups_from_stratz]
         pool = Pool(len(all_func))
         for func in all_func:
@@ -27,7 +29,6 @@ class Csv_generator(Api_handler):
         pool.join()
         return ('OK')
 
-        
     def generate_players_w_heroes_synergy(self):
         all_players = pd.DataFrame(self.raw_query(
             'proPlayers/'))
@@ -147,10 +148,12 @@ class Csv_generator(Api_handler):
                     additional=f"?less_than_match_id={df.match_id.iloc[-1]}")))
             except:
                 pass
-        df['start_time'] = df['start_time'].apply(lambda x : datetime.fromtimestamp(x))
-        df[df['start_time'] > (datetime.now() - timedelta(days=days_ago))].to_csv('./data/all_matches.csv', index=False)
+        df['start_time'] = df['start_time'].apply(
+            lambda x: datetime.fromtimestamp(x))
+        df[df['start_time'] > (datetime.now() - timedelta(days=days_ago))
+           ].to_csv('./data/all_matches.csv', index=False)
         os.environ["NB_QUERY_DONE"] = str(self.nb_query_done)
-        
+
     def process_matches(self, number_of_match_to_process=0, mode='a+'):
         df = pd.read_csv('./data/all_matches.csv')
         dataset_size = 0
@@ -165,8 +168,8 @@ class Csv_generator(Api_handler):
             df = df.iloc[step:]
             ready_for_dataset["source"] = "openDota"
             data_chunk = data_handler.make_dataset(
-                ready_for_dataset, is_prediction=False, additional_values=['patch', 
-                                                                           'game_mode',  'source','dire_score', 'radiant_score', 'duration', 'first_blood_time'])
+                ready_for_dataset, is_prediction=False, additional_values=['patch',
+                                                                           'game_mode',  'source', 'dire_score', 'radiant_score', 'duration', 'first_blood_time'])
             dataset_size += len(data_chunk)
             if not data_chunk.empty:
                 # log('SUCCESS', f"{len(data_chunk)}/{dataset_size} into file ")
@@ -195,7 +198,8 @@ class Csv_generator(Api_handler):
         if row_nb_last_match > 0:
             matches = matches[row_nb_last_match:]
         matches.to_csv('./data/all_matches.csv', index=False)
-        df.drop_duplicates(subset="match_id").to_csv('./data/dataset.csv', index=False)
+        df.drop_duplicates(subset="match_id").to_csv(
+            './data/dataset.csv', index=False)
         os.environ["NB_QUERY_DONE"] = str(self.nb_query_done)
 
     def process_batch(self, match_ids):
@@ -277,12 +281,12 @@ class Csv_generator(Api_handler):
 
 def generate_games(days_ago=5, to_scrap=200, start_at_match_id=0):
     c = Csv_generator('proMatches')
-    c.generate_matches(days_ago=days_ago, 
+    c.generate_matches(days_ago=days_ago,
                        start_at_match_id=start_at_match_id)
-    mode = 'w+' 
+    mode = 'w+'
     if path.exists("./data/dataset.csv"):
-        mode = 'a+' 
-        
+        mode = 'a+'
+
     ret = c.process_matches(number_of_match_to_process=to_scrap, mode=mode)
     if ret == 0:
         log("INFO", "nothing to do")
@@ -293,3 +297,6 @@ def generate_games(days_ago=5, to_scrap=200, start_at_match_id=0):
 def generate_meta():
     l = Csv_generator(api_type='proMatches')
     l.generate_meta()
+
+
+# generate_games(days_ago=1)
