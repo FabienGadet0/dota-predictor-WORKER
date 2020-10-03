@@ -12,7 +12,6 @@ DotEnv.config()
 # todo [x]  insert it
 # todo [x]  update_meta every week (depending on the amount of query (set in next todo))
 # todo [ ]  predict these games
-# todo [ ]  set to env number of queries done
 
 # todo setup julia dans docker
 
@@ -43,7 +42,7 @@ function handle_commandline(arg, value)
     end
 end
 
-    
+
 function main()
     # HTTP.serve(handler, "0.0.0.0", parse(Int, ARGS[1]))
     parsed_args = parse_commandline()
@@ -56,5 +55,3 @@ end
 
 
 main()
-
-# Generator.call_generate_live()

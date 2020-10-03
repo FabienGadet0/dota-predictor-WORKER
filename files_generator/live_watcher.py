@@ -19,7 +19,7 @@ class Live_watcher(Api_handler):
         self.stratz_api = 'https://api.stratz.com/api/v1/'
 
     def get_json(self):
-        return pd.read_json(self.exec_query(to_json=False))
+        return pd.read_json(self.exec_query(to_json=False, mute=True))
 
     def parse_steam(self):
         log("INFO", "Querying Steam api url")
@@ -62,7 +62,8 @@ class Live_watcher(Api_handler):
                                                 radiant_team['players'])
                     data['dire_team'] = Team(dire_team,
                                              dire_team['players'])
-                    print(f" {data['match_id']} -> {data['radiant_team'].name} (radiant) vs {data['dire_team'].name} (dire) ")
+                    print(
+                        f" {data['match_id']} -> {data['radiant_team'].name} (radiant) vs {data['dire_team'].name} (dire) ")
                     # ? ===================
 
                     # ? Synergy scores
@@ -110,26 +111,30 @@ class Live_watcher(Api_handler):
             r = requests.get(self.stratz_api + f'match/{id}/live')
             if r.status_code == 200:
                 df = df.append(pd.Series(r.json()), ignore_index=True)
-            else:
-                log('INFO', f'match id {id} not ready')
+                # log('INFO', f'match id {id} found')
+            # else:
+                # log('INFO', f'match id {id} not ready')
         return df
 
     def get_current_games_stats_stratz(self):
-        df = self.get_json()
-        if 'team_id_radiant' not in df.columns.values and 'team_id_dire' not in df.columns.values:
-            return pd.DataFrame()
-        incoming_games = df[(df.team_id_radiant.notnull()) & (
-            df.team_id_dire.notnull()) & (df.deactivate_time == 0)]
-        if len(incoming_games) > 0:
-            incoming_games = self.get_live_data_stratz(incoming_games.match_id)
-            ready_for_dataset = self.process_live_batch_stratz(
-                incoming_games)
-            ready_for_dataset['winner'] = 'na'
-            ready_for_dataset['version'] = 0
-            ready_for_dataset = ready_for_dataset.dropna()
-            dataset = data_handler.make_dataset(ready_for_dataset, is_prediction=True, additional_values=[
-                'gameTime', 'gameMode', 'leagueId', 'last_update_time'])
-            return dataset
+        r = requests.get(self.stratz_api + 'match/live')
+        df = pd.DataFrame(r.json())
+        df = df[((~df.isCompleted) & (
+            df.numHumanPlayers == 10) & (df.gameMode == 2))]
+        if len(df) > 0:
+            try:
+                incoming_games = self.get_live_data_stratz(df.matchId)
+                ready_for_dataset = self.process_live_batch_stratz(
+                    incoming_games)
+                ready_for_dataset['winner'] = 'na'
+                ready_for_dataset['version'] = 0
+                ready_for_dataset = ready_for_dataset.dropna()
+                dataset = data_handler.make_dataset(ready_for_dataset, is_prediction=True, additional_values=[
+                    'gameTime', 'gameMode', 'leagueId', 'last_update_time'])
+                dataset['source'] = 'stratz'
+                return dataset
+            except:
+                pass
         else:
             log('INFO', 'No games currently in live stratz with enough data')
             return pd.DataFrame()
@@ -150,6 +155,7 @@ class Live_watcher(Api_handler):
             ready_for_dataset = ready_for_dataset.dropna()
             dataset = data_handler.make_dataset(ready_for_dataset, is_prediction=True, additional_values=[
                 'game_time',  'average_mmr', 'game_mode', 'league_id', 'last_update_time'])
+            dataset['source'] = 'openDota'
             return dataset
         else:
             return pd.DataFrame()
@@ -298,8 +304,8 @@ class Live_watcher(Api_handler):
                 # ? ===================
 
                 data['match_id'] = game_data.match_id
-                data['winner'] = pd.NA
-                data['version'] = pd.NA
+                data['winner'] = None
+                data['version'] = None
                 data['game_time'] = game_data.game_time
                 data['average_mmr'] = game_data.average_mmr
                 data['game_mode'] = game_data.game_mode
@@ -318,17 +324,18 @@ class Live_watcher(Api_handler):
         return matches
 
 
-
 def get_live():
     l = Live_watcher()
     to_predict = pd.DataFrame()
+    to_predict2 = pd.DataFrame()
+    to_predict3 = pd.DataFrame()
+
     to_predict3 = l.get_current_games_stats_stratz()
-    to_predict3['source'] = 'stratz'
     # to_predict = l.parse_steam()
     # to_predict['source'] = 'steam'
     to_predict2 = l.get_current_games_stats()
-    to_predict2['source'] = 'openDota'
 
-    df = pd.concat([to_predict, to_predict2, to_predict3], sort=False).drop_duplicates(subset="match_id")
+    df = pd.concat([to_predict, to_predict2, to_predict3],
+                   sort=False).drop_duplicates(subset="match_id")
     df.to_csv('./data/live_games.csv', index=False)
     return len(df)

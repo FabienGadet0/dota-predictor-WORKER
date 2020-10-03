@@ -26,7 +26,6 @@ function call_generate_live()
     rows_inserted = DBInterface.file_to_db(db, "./data/live_games.csv")
     DBInterface.close(db)
     rows_inserted
-        # DBInterface.write(db, df, "games")
 end
 
 
