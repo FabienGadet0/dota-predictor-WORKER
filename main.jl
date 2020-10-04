@@ -42,9 +42,8 @@ function handle_commandline(arg, value)
     end
 end
 
-
+    
 function main()
-    # HTTP.serve(handler, "0.0.0.0", parse(Int, ARGS[1]))
     parsed_args = parse_commandline()
     @debug parsed_args
     for (arg, val) in parsed_args
@@ -52,6 +51,5 @@ function main()
         handle_commandline(arg, val)
     end
 end
-
 
 main()

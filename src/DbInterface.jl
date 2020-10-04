@@ -6,7 +6,7 @@ using IterTools, Tables, DataFramesMeta, DataFrames
 
 const COLUMNS_TO_CHANGE = Dict{String,String}("last_update_time" => "start_date", "start_time" => "start_date") 
 const COLUMNS_TO_CONVERT_TO_INT = ["dire_score", "radiant_score", "first_blood_time", "duration", "radiant_score" , "duration", "match_id"]
-const GAMES_MAIN_COLUMNS = ["match_id", "start_date", "dire_team", "radiant_team","first_blood_time", "winner", "patch", "dire_score", "radiant_score" , "duration", "source"]
+const GAMES_MAIN_COLUMNS = ["match_id", "start_date", "dire_team", "radiant_team", "winner", "patch", "dire_score", "radiant_score" , "duration", "source"]
 const TECHNICAL_DATA_COLUMNS = ["dire_team_heroes_meta_points"
 ,"radiant_team_heroes_meta_points"
 ,"dire_team_matchup_score"
@@ -24,6 +24,7 @@ const TECHNICAL_DATA_COLUMNS = ["dire_team_heroes_meta_points"
 ,"dire_team_winrate_against"
 ,"radiant_team_winrate_against"
 ,"dire_team_rating"
+,"first_blood_time"
 ,"radiant_team_rating"
 ,"radiant_team_peers_score"
 ,"dire_team_peers_score"
@@ -58,8 +59,8 @@ function write(db::dbClass, df, tableName)
     _prepare_field(x::AbstractString) = string("\"", replace(x, "\"" => "\"\""), "\"")
 
     alreadyInDb = read(db, tableName) |> DataFrame
-    # toInsert = join(df, alreadyInDb, kind=:left, on=:match_id, makeunique=true)
-    # toInsert = toInsert[filter(x -> !occursin("_1", x), names(toInsert))]
+
+
     missingsColumns = filter(x -> !(x in names(df)), names(alreadyInDb))
     for col in filter(x -> !(x in names(df)), names(alreadyInDb))
         df[col] = missing
@@ -104,11 +105,10 @@ function file_to_db(db::dbClass, path_to_csv::String)
     # ? Technical_data clear
     technical_data = @linq df |> 
     select(TECHNICAL_DATA_COLUMNS)
-     
     DBInterface.write(db, games, "games")
     DBInterface.write(db, technical_data, "technical_data")
-    ``
-    nrow(games)
+
+    nrow(games) 
 end
 
 end

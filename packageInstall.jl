@@ -38,6 +38,7 @@ Conda.add("termcolor", Conda.ROOTENV)
 
 
 # Pkg.build("PyCall")
+Pkg.instantiate()
 
 using DotEnv, ArgParse,  Match, DataFrames, CSV , Query, LibPQ, DataFramesMeta, PyCall
 

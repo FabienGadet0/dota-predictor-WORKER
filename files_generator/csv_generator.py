@@ -279,13 +279,16 @@ class Csv_generator(Api_handler):
         return matches
 
 
-def generate_games(days_ago=5, to_scrap=200, start_at_match_id=0):
+def generate_games(days_ago=5, to_scrap=0, start_at_match_id=0):
     c = Csv_generator('proMatches')
     c.generate_matches(days_ago=days_ago,
                        start_at_match_id=start_at_match_id)
     mode = 'w+'
+    # ? To generate big file and not delete old one (if not inserted to db)
+    # if path.exists("./data/dataset.csv"):
+    #     mode = 'a+'
     if path.exists("./data/dataset.csv"):
-        mode = 'a+'
+        os.remove("./data/dataset.csv")
 
     ret = c.process_matches(number_of_match_to_process=to_scrap, mode=mode)
     if ret == 0:
@@ -297,6 +300,3 @@ def generate_games(days_ago=5, to_scrap=200, start_at_match_id=0):
 def generate_meta():
     l = Csv_generator(api_type='proMatches')
     l.generate_meta()
-
-
-# generate_games(days_ago=1)
