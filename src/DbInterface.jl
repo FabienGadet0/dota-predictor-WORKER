@@ -60,14 +60,13 @@ function write(db::dbClass, df, tableName)
 
     alreadyInDb = read(db, tableName) |> DataFrame
 
-
     missingsColumns = filter(x -> !(x in names(df)), names(alreadyInDb))
     for col in filter(x -> !(x in names(df)), names(alreadyInDb))
         df[col] = missing
     end
     toInsert = @linq vcat(df, alreadyInDb) |> unique(:match_id)
     if nrow(toInsert) > 0
-        LibPQ.execute(db.conn, "truncate $tableName cascade")
+        LibPQ.execute(db.conn, "truncate $tableName;")
         row_names = join(string.(Tables.columnnames(toInsert)), ",")
         row_strings = imap(Tables.eachrow(toInsert)) do row
             join((_prepare_field(x) for x in row), ",") * "\n"
@@ -98,15 +97,19 @@ function file_to_db(db::dbClass, path_to_csv::String)
     df = @linq df  |> dropmissing(["match_id", "dire_team", "radiant_team"])
     # ? Get the available columns
     games_columns = intersect(names(df), GAMES_MAIN_COLUMNS)
+    technical_data_columns = intersect(names(df), TECHNICAL_DATA_COLUMNS)
+
+
     games = @linq df |> select(games_columns) 
+
     if "winner" in names(games)
         games["winner_name"] = ("winner" in names(games) && games["winner"] === "dire_team") ? games["dire_team"] : games["radiant_team"]
     end
-    # ? Technical_data clear
+
     technical_data = @linq df |> 
-    select(TECHNICAL_DATA_COLUMNS)
-    DBInterface.write(db, games, "games")
+    select(technical_data_columns)
     DBInterface.write(db, technical_data, "technical_data")
+    DBInterface.write(db, games, "games")
 
     nrow(games) 
 end
