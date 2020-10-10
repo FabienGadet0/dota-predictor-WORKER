@@ -1,10 +1,10 @@
 module Model
 
-include("DBInterface.jl")
+include("postgresWrapper.jl")
 
 
 
-using .DBInterface, Match, DataFrames, Dates, DataFramesMeta
+using .postgresWrapper, Match, DataFrames, Dates, DataFramesMeta
 using MLJ, MLJScikitLearnInterface
 
 
@@ -14,7 +14,7 @@ _countmissings(df) = DataFrame(zip(names(df), colwise(x -> sum(ismissing.(x)), d
 # * Preprocess ####################################################################
 
 function getPredictions(db)
-    DBInterface.execQueryFromFile(db, "queries/get_new_predictions.sql")[Not([:fill_na, :winner_name])]
+    postgresWrapper.execQueryFromFile(db, "queries/get_new_predictions.sql")[Not([:fill_na, :winner_name])]
 end
 
 
@@ -55,7 +55,7 @@ function prepareUnpack(df)
 end
 
 function train!(modelName, df)
-    df = @linq df |> select(vcat(DBInterface.MODEL_FEATURES, "winner"))
+    df = @linq df |> select(vcat(postgresWrapper.MODEL_FEATURES, "winner"))
     X, y, train, test = prepareUnpack(df)
     mach = machine("models/$modelName.jlso", X, y)
     fit!(mach, rows=train, verbosity=2)
@@ -79,7 +79,7 @@ end
 
 function predictForEach(df=DataFrame(), returnValues=false)
     # ? For each jlso in models , predict with it
-    db = DBInterface.DbConstructor()
+    db = postgresWrapper.DbConstructor()
     tmp = DataFrame()
     results = DataFrame()
     files = split.(readdir("models/"), ".")
@@ -90,7 +90,7 @@ function predictForEach(df=DataFrame(), returnValues=false)
     end
 
     if nrow(df) > 0 && length(files) > 0
-        X =  @linq df |> select(DBInterface.MODEL_FEATURES)
+        X =  @linq df |> select(postgresWrapper.MODEL_FEATURES)
         for modelName in files
             p = pred(modelName, X)
             tmp["predict_proba"] = p[2]
@@ -100,8 +100,8 @@ function predictForEach(df=DataFrame(), returnValues=false)
             results = vcat(tmp, results)
         end
         results["inserted_date"] = now()
-        DBInterface.write(db, results, "prediction")
-        DBInterface.close(db)
+        postgresWrapper.write(db, results, "prediction")
+        postgresWrapper.close(db)
     end
     returnValues ? results : nrow(results)
 end

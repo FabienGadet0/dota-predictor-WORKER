@@ -1,8 +1,8 @@
 # module Misc
-# include("./DBInterface.jl")
+# include("./postgresWrapper.jl")
 # include("./CallScripts.jl")
 
-# import .DBInterface, CSV
+# import .postgresWrapper, CSV
 
 # using DataFrames, DotEnv, DataFramesMeta, .CallScripts
 

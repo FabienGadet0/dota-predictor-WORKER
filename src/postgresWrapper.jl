@@ -1,4 +1,4 @@
-module DBInterface
+module postgresWrapper
 
 import CSV , Query,LibPQ
 using IterTools, Tables, DataFramesMeta, DataFrames , Dates
@@ -143,8 +143,8 @@ function file_to_db(db::dbClass, path_to_csv::String)
         select(technical_data_columns)
 
     games["inserted_date"] = now()
-    DBInterface.write(db, technical_data, "technical_data")
-    DBInterface.write(db, games, "games")
+    postgresWrapper.write(db, technical_data, "technical_data")
+    postgresWrapper.write(db, games, "games")
 
     nrow(games) 
 end
