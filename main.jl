@@ -1,8 +1,8 @@
-include("./src/DBInterface.jl") # ? Maybe not mandatory to add src cause already in path ?
-include("./src/CallScripts.jl")
-include("./src/Generator.jl")
-include("./src/Model.jl")
-include("./src/misc.jl")
+include("src/DBInterface.jl") # ? Maybe not mandatory to add src cause already in path ?
+include("src/CallScripts.jl")
+include("src/Generator.jl")
+include("src/Model.jl")
+include("src/misc.jl")
 
 import CSV , Query
 using DotEnv,  .DBInterface, ArgParse, .CallScripts, Match, DataFrames, .Generator, Dates, .Model
