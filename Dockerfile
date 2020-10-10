@@ -32,4 +32,4 @@ RUN julia  /tmp/packageInstall.jl
 # ENTRYPOINT [ "/bin/bash" ]
 # CMD ["/bin/bash"]
 
-# CMD ["julia"]
+CMD ["julia"]
