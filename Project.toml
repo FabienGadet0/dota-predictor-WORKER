@@ -1,4 +1,4 @@
-name = "dota"
+name = "app"
 uuid = "725ec17c-ec4c-498d-8a69-8c6b6ad95576"
 authors = ["Fabien Gadet <fabiengadet@gmail.com>"]
 version = "0.1.0"
