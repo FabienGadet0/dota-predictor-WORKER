@@ -12,3 +12,6 @@
 
 
 # end
+
+
+_countmissings(df) = DataFrame(zip(names(df), colwise(x -> sum(ismissing.(x)), df)))

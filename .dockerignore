@@ -1,0 +1,16 @@
+Manifest.toml
+Project.toml
+.gitignore
+.env
+__pycache__
+vscode/
+.empty
+/data/dataset.csv
+/data/incoming_games_raw.csv
+/data/live_games.csv
+tester.jl
+.gitignore
+.git/
+NOTE
+dockerGenerator.jl
+test/

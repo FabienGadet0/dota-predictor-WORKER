@@ -47,6 +47,15 @@ function execQuery(db::dbClass, query::String)
 end
 
 
+function execQueryFromFile(db::dbClass, file_path::String)
+    @debug "Exec Query from file : $file" 
+    @info file_path
+    open(file_path) do f
+        query = Base.read(f, String)
+        return DataFrame(LibPQ.execute(db.conn, query))
+    end
+end
+
 
 function read(db::dbClass, tableName, limit=500000000)
     @debug "Read query : $tableName with limit $limit"
@@ -71,7 +80,7 @@ function write(db::dbClass, df, tableName)
         row_strings = imap(Tables.eachrow(toInsert)) do row
             join((_prepare_field(x) for x in row), ",") * "\n"
         end
-        @info "Inserting $(nrow(toInsert)) in $tableName)"
+        @debug "Inserting $(nrow(toInsert)) in $tableName)"
         copyin = LibPQ.CopyIn("COPY $tableName ($row_names) FROM STDIN (FORMAT CSV) ;", row_strings)
         LibPQ.execute(db.conn, copyin, throw_error=false)
     end
@@ -81,6 +90,10 @@ end
 
 function close(db::dbClass)
     LibPQ.close(db.conn)
+end
+
+function get_all_new_prediction(db)
+    df = execQuery(db, query)
 end
 
 function file_to_db(db::dbClass, path_to_csv::String)
@@ -107,7 +120,7 @@ function file_to_db(db::dbClass, path_to_csv::String)
     end
 
     technical_data = @linq df |> 
-    select(technical_data_columns)
+        select(technical_data_columns)
     DBInterface.write(db, technical_data, "technical_data")
     DBInterface.write(db, games, "games")
 

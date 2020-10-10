@@ -15,7 +15,9 @@ metadata_packages = [
     "Conda",
     "Query",
     "Tables",
-    "PyCall"
+    "PyCall",
+    "MLJ",
+    "MLJScikitLearnInterface"
 ]
 
 Pkg.update()
