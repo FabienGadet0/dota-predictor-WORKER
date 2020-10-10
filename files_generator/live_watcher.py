@@ -118,11 +118,11 @@ class Live_watcher(Api_handler):
 
     def get_current_games_stats_stratz(self):
         r = requests.get(self.stratz_api + 'match/live')
-        df = pd.DataFrame(r.json())
-        df = df[((~df.isCompleted) & (
-            df.numHumanPlayers == 10) & (df.gameMode == 2))]
-        if len(df) > 0:
-            try:
+        try:
+            df = pd.DataFrame(r.json())
+            df = df[((~df.isCompleted) & (
+                df.numHumanPlayers == 10) & (df.gameMode == 2))]
+            if len(df) > 0:
                 incoming_games = self.get_live_data_stratz(df.matchId)
                 ready_for_dataset = self.process_live_batch_stratz(
                     incoming_games)
@@ -133,11 +133,12 @@ class Live_watcher(Api_handler):
                     'gameTime', 'gameMode', 'leagueId', 'last_update_time'])
                 dataset['source'] = 'stratz'
                 return dataset
-            except:
-                pass
-        else:
-            log('INFO', 'No games currently in live stratz with enough data')
-            return pd.DataFrame()
+
+            else:
+                log('INFO', 'No games currently in live stratz with enough data')
+                return pd.DataFrame()
+        except:
+            pass
 
     def get_current_games_stats(self, append=True):
         df = self.get_json()
@@ -339,3 +340,6 @@ def get_live():
                    sort=False).drop_duplicates(subset="match_id")
     df.to_csv('./data/live_games.csv', index=False)
     return len(df)
+
+
+get_live()

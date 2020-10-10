@@ -1,7 +1,7 @@
 module DBInterface
 
 import CSV , Query,LibPQ
-using IterTools, Tables, DataFramesMeta, DataFrames
+using IterTools, Tables, DataFramesMeta, DataFrames , Dates
 
 
 const COLUMNS_TO_CHANGE = Dict{String,String}("last_update_time" => "start_date", "start_time" => "start_date") 
@@ -141,6 +141,8 @@ function file_to_db(db::dbClass, path_to_csv::String)
 
     technical_data = @linq df |> 
         select(technical_data_columns)
+
+    games["inserted_date"] = now()
     DBInterface.write(db, technical_data, "technical_data")
     DBInterface.write(db, games, "games")
 

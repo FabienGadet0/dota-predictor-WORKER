@@ -99,6 +99,7 @@ function predictForEach(df=DataFrame(), returnValues=false)
             tmp["match_id"] = df["match_id"]
             results = vcat(tmp, results)
         end
+        results["inserted_date"] = now()
         DBInterface.write(db, results, "prediction")
         DBInterface.close(db)
     end
