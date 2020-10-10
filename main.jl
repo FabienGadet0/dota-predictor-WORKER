@@ -1,3 +1,7 @@
+import Pkg
+
+Pkg.build("PyCall")
+
 include("src/postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
 include("src/callScripts.jl")
 include("src/generator.jl")
