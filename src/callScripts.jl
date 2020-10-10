@@ -1,4 +1,4 @@
-module CallScripts
+module callScripts
 using PyCall
 
 ENV["DEBUG"] = false

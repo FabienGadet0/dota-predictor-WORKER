@@ -1,10 +1,10 @@
 # module Misc
 # include("./postgresWrapper.jl")
-# include("./CallScripts.jl")
+# include("./callScripts.jl")
 
 # import .postgresWrapper, CSV
 
-# using DataFrames, DotEnv, DataFramesMeta, .CallScripts
+# using DataFrames, DotEnv, DataFramesMeta, .callScripts
 
 # DotEnv.config()
 

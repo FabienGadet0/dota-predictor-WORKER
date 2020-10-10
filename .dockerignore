@@ -12,5 +12,5 @@ tester.jl
 .gitignore
 .git/
 NOTE
-dockerGenerator.jl
+dockergenerator.jl
 test/

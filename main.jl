@@ -1,11 +1,11 @@
 include("src/postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
-include("src/CallScripts.jl")
-include("src/Generator.jl")
+include("src/callScripts.jl")
+include("src/generator.jl")
 include("src/Model.jl")
 include("src/misc.jl")
 
 import CSV , Query
-using DotEnv,  .postgresWrapper, ArgParse, .CallScripts, Match, DataFrames, .Generator, Dates, .Model
+using DotEnv,  .postgresWrapper, ArgParse, .callScripts, Match, DataFrames, .generator, Dates, .model
 DotEnv.config()
 
 # todo [x]  every week call generate_games for days_ago=10
@@ -40,10 +40,10 @@ end
 
 function handle_commandline(arg, value)
     @match (arg, value) begin
-    ("generate-games", n::Int)   => n > 0 ? Generator.call_generate_games(n) : nothing
-    ("generate-meta", b::Bool)   => (b && Dates.dayofweek(now()) === 1) ? Generator.call_generate_meta() : nothing
-    ("generate-live", b::Bool)   => b ? Generator.call_generate_live() : nothing
-    ("predict-all", b::Bool)   => b ? Model.predictForEach() : nothing
+    ("generate-games", n::Int)   => n > 0 ? generator.call_generate_games(n) : nothing
+    ("generate-meta", b::Bool)   => (b && Dates.dayofweek(now()) === 1) ? generator.call_generate_meta() : nothing
+    ("generate-live", b::Bool)   => b ? generator.call_generate_live() : nothing
+    ("predict-all", b::Bool)   => b ? model.predictForEach() : nothing
     bad                          => println("Unknown argument: $bad")
     end
 end

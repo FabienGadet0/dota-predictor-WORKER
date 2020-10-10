@@ -1,4 +1,4 @@
-module Model
+module model
 
 include("postgresWrapper.jl")
 
