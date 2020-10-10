@@ -1,10 +1,11 @@
 include("./src/DBInterface.jl") # ? Maybe not mandatory to add src cause already in path ?
 include("./src/CallScripts.jl")
 include("./src/Generator.jl")
+include("./src/Model.jl")
 include("./src/misc.jl")
 
 import CSV , Query
-using DotEnv,  .DBInterface, ArgParse, .CallScripts, Match, DataFrames, .Generator, Dates
+using DotEnv,  .DBInterface, ArgParse, .CallScripts, Match, DataFrames, .Generator, Dates, .Model
 DotEnv.config()
 
 # todo [x]  every week call generate_games for days_ago=10
@@ -30,6 +31,9 @@ function parse_commandline()
         "--generate-live"
             help = "Call python script and generate live games"
             action = :store_true        
+        "--predict-all"
+            help = "Get all non predicted games and predict"
+            action = :store_true        
     end
 return parse_args(s)
 end
@@ -39,6 +43,7 @@ function handle_commandline(arg, value)
     ("generate-games", n::Int)   => n > 0 ? Generator.call_generate_games(n) : nothing
     ("generate-meta", b::Bool)   => (b && Dates.dayofweek(now()) === 1) ? Generator.call_generate_meta() : nothing
     ("generate-live", b::Bool)   => b ? Generator.call_generate_live() : nothing
+    ("predict-all", b::Bool)   => b ? Model.predictForEach() : nothing
     bad                          => println("Unknown argument: $bad")
     end
 end

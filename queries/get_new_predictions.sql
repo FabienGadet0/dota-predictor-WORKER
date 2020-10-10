@@ -12,5 +12,5 @@ where
         from
             prediction
         where
-            predict is not null
+            predict_name is not null
     )

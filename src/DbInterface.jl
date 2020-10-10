@@ -30,6 +30,26 @@ const TECHNICAL_DATA_COLUMNS = ["dire_team_heroes_meta_points"
 ,"dire_team_peers_score"
 ,"match_id"]
 
+const MODEL_FEATURES = ["dire_team_heroes_meta_points"
+,"radiant_team_heroes_meta_points"
+,"dire_team_matchup_score"
+,"radiant_team_matchup_score"
+,"dire_team_synergy_with"
+,"radiant_team_synergy_with"
+,"dire_team_synergy_against"
+,"radiant_team_synergy_against"
+,"dire_team_synergy_score"
+,"radiant_team_synergy_score"
+,"dire_team_winrate"
+,"radiant_team_winrate"
+,"dire_team_winrate_with"
+,"radiant_team_winrate_with"
+,"dire_team_winrate_against"
+,"radiant_team_winrate_against"
+,"dire_team_rating"
+,"radiant_team_rating"
+,"radiant_team_peers_score"
+,"dire_team_peers_score"]
 
 
 struct dbClass
