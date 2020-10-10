@@ -1,14 +1,16 @@
 FROM julia:1.5.2-buster
 
-ADD packageInstall.jl /tmp/packageInstall.jl
+# ADD packageInstall.jl /tmp/packageInstall.jl
+# COPY Project.toml ~/.julia/environments/v1.5/
+# COPY Manifest.toml ~/.julia/environments/v1.5/
 
 COPY . /app
 WORKDIR /app
 
-RUN julia  /tmp/packageInstall.jl
+# RUN julia --project=. /tmp/packageInstall.jl
 
-# RUN julia -e "using Pkg; Pkg.instantiate()" && \
-#     # julia -e "Pkg.init()" && \
+RUN julia --project=. -e "using Pkg; Pkg.instantiate()"
+# julia -e "Pkg.using("")"
 #     julia -e "Pkg.update()" && \
 #     julia -e "Pkg.add("CSV")" && \
 #     julia -e "Pkg.add("DataFrames")" && \
@@ -32,4 +34,4 @@ RUN julia  /tmp/packageInstall.jl
 # ENTRYPOINT [ "/bin/bash" ]
 # CMD ["/bin/bash"]
 
-CMD ["julia"]
+CMD ["julia", "--project=."]

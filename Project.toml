@@ -1,7 +1,11 @@
+name = "dota"
+uuid = "725ec17c-ec4c-498d-8a69-8c6b6ad95576"
+authors = ["Fabien Gadet <fabiengadet@gmail.com>"]
+version = "0.1.0"
+
 [deps]
 Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
-AutoML = "9cb3cefc-9d74-11e9-126a-fdc13771fa31"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 CUDAapi = "3895d2a7-ec45-59b8-82bb-cfc6a382f9b3"
