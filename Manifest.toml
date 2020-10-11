@@ -60,7 +60,13 @@ git-tree-sha1 = "6e8781b9edc24f17154742ed7966a42c5dad9e35"
 uuid = "6710c13c-97f1-543f-91c5-74e8f7d95b35"
 version = "1.2.3"
 
-
+[[AutoML]]
+deps = ["ArgParse", "CSV", "CodecZlib", "DataFrames", "Dates", "Images", "Knet", "MAT", "Pkg", "Plots", "PyCall", "Random", "SpecialFunctions", "Statistics", "StatsBase", "YAML"]
+git-tree-sha1 = "95631eabc166d5e4882580572a131a70b73b4302"
+repo-rev = "master"
+repo-url = "https://github.com/alperkesen/AutoML.jl"
+uuid = "9cb3cefc-9d74-11e9-126a-fdc13771fa31"
+version = "0.1.0"
 
 [[AxisAlgorithms]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "WoodburyMatrices"]

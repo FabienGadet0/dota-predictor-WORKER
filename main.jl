@@ -1,11 +1,3 @@
-using Pkg
-
-pkg.build("PyCall")
-
-Pkg.add("ScikitLearn")
-Pkg.add("MLJScikitLearnInterface")
-pkg.Instantiate()
-
 include("src/postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
 include("src/callScripts.jl")
 include("src/generator.jl")
@@ -30,10 +22,10 @@ function parse_commandline()
             action = :store_true
         "--generate-live"
             help = "Call python script and generate live games"
-            action = :store_true        
+            action = :store_true
         "--predict-all"
             help = "Get all non predicted games and predict"
-            action = :store_true        
+            action = :store_true
     end
 return parse_args(s)
 end
@@ -48,8 +40,15 @@ function handle_commandline(arg, value)
     end
 end
 
-    
+
 function main()
+    @info "SALUT"
+    @info "SALUT"
+    @info "SALUT"
+    @info "SALUT"
+    @info "SALUT"
+    @info "SALUT"
+    println("testetetetqerqwmemqwnemqwnemqwemn")
     parsed_args = parse_commandline()
     @debug parsed_args
     for (arg, val) in parsed_args

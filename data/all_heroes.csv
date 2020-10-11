@@ -1,0 +1,120 @@
+id,localized_name,icon,pro_ban,pro_win,pro_pick,pro_winrate
+1,Anti-Mage,/apps/dota2/images/heroes/antimage_icon.png,678,72,136,52.9412
+2,Axe,/apps/dota2/images/heroes/axe_icon.png,71,34,78,43.5897
+3,Bane,/apps/dota2/images/heroes/bane_icon.png,24,23,59,38.9831
+4,Bloodseeker,/apps/dota2/images/heroes/bloodseeker_icon.png,302,137,252,54.3651
+5,Crystal Maiden,/apps/dota2/images/heroes/crystal_maiden_icon.png,156,103,191,53.9267
+6,Drow Ranger,/apps/dota2/images/heroes/drow_ranger_icon.png,349,155,301,51.495
+7,Earthshaker,/apps/dota2/images/heroes/earthshaker_icon.png,65,47,93,50.5376
+8,Juggernaut,/apps/dota2/images/heroes/juggernaut_icon.png,198,91,191,47.644
+9,Mirana,/apps/dota2/images/heroes/mirana_icon.png,148,144,258,55.814
+10,Morphling,/apps/dota2/images/heroes/morphling_icon.png,459,109,211,51.6588
+11,Shadow Fiend,/apps/dota2/images/heroes/nevermore_icon.png,215,45,100,45.0
+12,Phantom Lancer,/apps/dota2/images/heroes/phantom_lancer_icon.png,247,39,83,46.988
+13,Puck,/apps/dota2/images/heroes/puck_icon.png,260,36,84,42.8571
+14,Pudge,/apps/dota2/images/heroes/pudge_icon.png,11,13,28,46.4286
+15,Razor,/apps/dota2/images/heroes/razor_icon.png,42,12,25,48.0
+16,Sand King,/apps/dota2/images/heroes/sand_king_icon.png,65,42,101,41.5842
+17,Storm Spirit,/apps/dota2/images/heroes/storm_spirit_icon.png,485,86,174,49.4253
+18,Sven,/apps/dota2/images/heroes/sven_icon.png,302,116,237,48.9451
+19,Tiny,/apps/dota2/images/heroes/tiny_icon.png,545,268,529,50.6616
+20,Vengeful Spirit,/apps/dota2/images/heroes/vengefulspirit_icon.png,257,161,305,52.7869
+21,Windranger,/apps/dota2/images/heroes/windrunner_icon.png,164,117,263,44.4867
+22,Zeus,/apps/dota2/images/heroes/zuus_icon.png,340,97,180,53.8889
+23,Kunkka,/apps/dota2/images/heroes/kunkka_icon.png,312,75,136,55.1471
+25,Lina,/apps/dota2/images/heroes/lina_icon.png,204,96,162,59.2593
+26,Lion,/apps/dota2/images/heroes/lion_icon.png,6,11,20,55.0
+27,Shadow Shaman,/apps/dota2/images/heroes/shadow_shaman_icon.png,74,31,67,46.2687
+28,Slardar,/apps/dota2/images/heroes/slardar_icon.png,258,84,183,45.9016
+29,Tidehunter,/apps/dota2/images/heroes/tidehunter_icon.png,123,65,111,58.5586
+30,Witch Doctor,/apps/dota2/images/heroes/witch_doctor_icon.png,26,70,127,55.1181
+31,Lich,/apps/dota2/images/heroes/lich_icon.png,44,39,94,41.4894
+32,Riki,/apps/dota2/images/heroes/riki_icon.png,66,24,55,43.6364
+33,Enigma,/apps/dota2/images/heroes/enigma_icon.png,33,13,26,50.0
+34,Tinker,/apps/dota2/images/heroes/tinker_icon.png,16,8,16,50.0
+35,Sniper,/apps/dota2/images/heroes/sniper_icon.png,1,4,6,66.6667
+36,Necrophos,/apps/dota2/images/heroes/necrolyte_icon.png,72,23,49,46.9388
+37,Warlock,/apps/dota2/images/heroes/warlock_icon.png,152,30,64,46.875
+38,Beastmaster,/apps/dota2/images/heroes/beastmaster_icon.png,371,103,189,54.4974
+39,Queen of Pain,/apps/dota2/images/heroes/queenofpain_icon.png,367,77,160,48.125
+40,Venomancer,/apps/dota2/images/heroes/venomancer_icon.png,347,58,130,44.6154
+41,Faceless Void,/apps/dota2/images/heroes/faceless_void_icon.png,648,206,354,58.1921
+42,Wraith King,/apps/dota2/images/heroes/skeleton_king_icon.png,30,23,48,47.9167
+43,Death Prophet,/apps/dota2/images/heroes/death_prophet_icon.png,364,59,124,47.5806
+44,Phantom Assassin,/apps/dota2/images/heroes/phantom_assassin_icon.png,180,47,104,45.1923
+45,Pugna,/apps/dota2/images/heroes/pugna_icon.png,191,71,154,46.1039
+46,Templar Assassin,/apps/dota2/images/heroes/templar_assassin_icon.png,271,87,175,49.7143
+47,Viper,/apps/dota2/images/heroes/viper_icon.png,217,44,91,48.3516
+48,Luna,/apps/dota2/images/heroes/luna_icon.png,23,25,42,59.5238
+49,Dragon Knight,/apps/dota2/images/heroes/dragon_knight_icon.png,47,40,74,54.0541
+50,Dazzle,/apps/dota2/images/heroes/dazzle_icon.png,27,16,31,51.6129
+51,Clockwerk,/apps/dota2/images/heroes/rattletrap_icon.png,325,187,359,52.0891
+52,Leshrac,/apps/dota2/images/heroes/leshrac_icon.png,103,78,152,51.3158
+53,Nature's Prophet,/apps/dota2/images/heroes/furion_icon.png,230,135,270,50.0
+54,Lifestealer,/apps/dota2/images/heroes/life_stealer_icon.png,316,104,181,57.4586
+55,Dark Seer,/apps/dota2/images/heroes/dark_seer_icon.png,201,39,86,45.3488
+56,Clinkz,/apps/dota2/images/heroes/clinkz_icon.png,19,11,22,50.0
+57,Omniknight,/apps/dota2/images/heroes/omniknight_icon.png,37,22,38,57.8947
+58,Enchantress,/apps/dota2/images/heroes/enchantress_icon.png,387,101,184,54.8913
+59,Huskar,/apps/dota2/images/heroes/huskar_icon.png,21,3,9,33.3333
+60,Night Stalker,/apps/dota2/images/heroes/night_stalker_icon.png,46,23,55,41.8182
+61,Broodmother,/apps/dota2/images/heroes/broodmother_icon.png,80,7,13,53.8462
+62,Bounty Hunter,/apps/dota2/images/heroes/bounty_hunter_icon.png,22,9,22,40.9091
+63,Weaver,/apps/dota2/images/heroes/weaver_icon.png,20,14,26,53.8462
+64,Jakiro,/apps/dota2/images/heroes/jakiro_icon.png,155,65,139,46.7626
+65,Batrider,/apps/dota2/images/heroes/batrider_icon.png,598,91,165,55.1515
+66,Chen,/apps/dota2/images/heroes/chen_icon.png,150,53,86,61.6279
+67,Spectre,/apps/dota2/images/heroes/spectre_icon.png,476,82,185,44.3243
+68,Ancient Apparition,/apps/dota2/images/heroes/ancient_apparition_icon.png,115,40,76,52.6316
+69,Doom,/apps/dota2/images/heroes/doom_bringer_icon.png,396,101,227,44.4934
+70,Ursa,/apps/dota2/images/heroes/ursa_icon.png,69,29,70,41.4286
+71,Spirit Breaker,/apps/dota2/images/heroes/spirit_breaker_icon.png,22,27,60,45.0
+72,Gyrocopter,/apps/dota2/images/heroes/gyrocopter_icon.png,26,24,48,50.0
+73,Alchemist,/apps/dota2/images/heroes/alchemist_icon.png,15,12,27,44.4444
+74,Invoker,/apps/dota2/images/heroes/invoker_icon.png,323,84,151,55.6291
+75,Silencer,/apps/dota2/images/heroes/silencer_icon.png,17,23,53,43.3962
+76,Outworld Devourer,/apps/dota2/images/heroes/obsidian_destroyer_icon.png,289,17,46,36.9565
+77,Lycan,/apps/dota2/images/heroes/lycan_icon.png,36,15,28,53.5714
+78,Brewmaster,/apps/dota2/images/heroes/brewmaster_icon.png,36,21,28,75.0
+79,Shadow Demon,/apps/dota2/images/heroes/shadow_demon_icon.png,91,68,140,48.5714
+80,Lone Druid,/apps/dota2/images/heroes/lone_druid_icon.png,151,6,17,35.2941
+81,Chaos Knight,/apps/dota2/images/heroes/chaos_knight_icon.png,64,41,84,48.8095
+82,Meepo,/apps/dota2/images/heroes/meepo_icon.png,17,5,8,62.5
+83,Treant Protector,/apps/dota2/images/heroes/treant_icon.png,104,94,197,47.7157
+84,Ogre Magi,/apps/dota2/images/heroes/ogre_magi_icon.png,64,108,250,43.2
+85,Undying,/apps/dota2/images/heroes/undying_icon.png,100,42,97,43.299
+86,Rubick,/apps/dota2/images/heroes/rubick_icon.png,223,228,482,47.3029
+87,Disruptor,/apps/dota2/images/heroes/disruptor_icon.png,38,55,114,48.2456
+88,Nyx Assassin,/apps/dota2/images/heroes/nyx_assassin_icon.png,99,43,81,53.0864
+89,Naga Siren,/apps/dota2/images/heroes/naga_siren_icon.png,90,12,22,54.5455
+90,Keeper of the Light,/apps/dota2/images/heroes/keeper_of_the_light_icon.png,6,18,35,51.4286
+91,Io,/apps/dota2/images/heroes/wisp_icon.png,299,60,117,51.2821
+92,Visage,/apps/dota2/images/heroes/visage_icon.png,37,9,18,50.0
+93,Slark,/apps/dota2/images/heroes/slark_icon.png,344,35,80,43.75
+94,Medusa,/apps/dota2/images/heroes/medusa_icon.png,48,12,37,32.4324
+95,Troll Warlord,/apps/dota2/images/heroes/troll_warlord_icon.png,217,95,187,50.8021
+96,Centaur Warrunner,/apps/dota2/images/heroes/centaur_icon.png,71,55,99,55.5556
+97,Magnus,/apps/dota2/images/heroes/magnataur_icon.png,555,121,245,49.3878
+98,Timbersaw,/apps/dota2/images/heroes/shredder_icon.png,338,66,119,55.4622
+99,Bristleback,/apps/dota2/images/heroes/bristleback_icon.png,7,7,19,36.8421
+100,Tusk,/apps/dota2/images/heroes/tusk_icon.png,129,98,198,49.4949
+101,Skywrath Mage,/apps/dota2/images/heroes/skywrath_mage_icon.png,16,36,80,45.0
+102,Abaddon,/apps/dota2/images/heroes/abaddon_icon.png,40,33,59,55.9322
+103,Elder Titan,/apps/dota2/images/heroes/elder_titan_icon.png,96,70,113,61.9469
+104,Legion Commander,/apps/dota2/images/heroes/legion_commander_icon.png,193,70,148,47.2973
+105,Techies,/apps/dota2/images/heroes/techies_icon.png,44,9,13,69.2308
+106,Ember Spirit,/apps/dota2/images/heroes/ember_spirit_icon.png,583,121,260,46.5385
+107,Earth Spirit,/apps/dota2/images/heroes/earth_spirit_icon.png,183,139,257,54.0856
+108,Underlord,/apps/dota2/images/heroes/abyssal_underlord_icon.png,214,89,184,48.3696
+109,Terrorblade,/apps/dota2/images/heroes/terrorblade_icon.png,450,81,158,51.2658
+110,Phoenix,/apps/dota2/images/heroes/phoenix_icon.png,581,158,327,48.318
+111,Oracle,/apps/dota2/images/heroes/oracle_icon.png,196,108,213,50.7042
+112,Winter Wyvern,/apps/dota2/images/heroes/winter_wyvern_icon.png,40,30,64,46.875
+113,Arc Warden,/apps/dota2/images/heroes/arc_warden_icon.png,119,31,71,43.662
+114,Monkey King,/apps/dota2/images/heroes/monkey_king_icon.png,90,58,96,60.4167
+119,Dark Willow,/apps/dota2/images/heroes/dark_willow_icon.png,27,26,56,46.4286
+120,Pangolier,/apps/dota2/images/heroes/pangolier_icon.png,77,60,134,44.7761
+121,Grimstroke,/apps/dota2/images/heroes/grimstroke_icon.png,95,106,235,45.1064
+126,Void Spirit,/apps/dota2/images/heroes/void_spirit_icon.png,433,168,350,48.0
+128,Snapfire,/apps/dota2/images/heroes/snapfire_icon.png,231,208,415,50.1205
+129,Mars,/apps/dota2/images/heroes/mars_icon.png,260,178,344,51.7442

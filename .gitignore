@@ -1,4 +1,8 @@
-data/
+/data/dataset.csv
+/data/incoming_games_raw.csv
+/data/live_games.csv
+/data/all_matches.csv
+/data/cleaned_dataset.csv
 __pycache__/
 vscode/
 .env

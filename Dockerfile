@@ -34,4 +34,4 @@ RUN julia --project=. -e "using Pkg; Pkg.instantiate()"
 # ENTRYPOINT [ "/bin/bash" ]
 # CMD ["/bin/bash"]
 
-CMD ["julia", "--project=."]
+# CMD ["julia", "--project=."]
