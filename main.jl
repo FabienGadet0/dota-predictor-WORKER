@@ -1,6 +1,10 @@
-import Pkg
+using Pkg
 
-Pkg.build("PyCall")
+pkg.build("PyCall")
+
+Pkg.add("ScikitLearn")
+Pkg.add("MLJScikitLearnInterface")
+pkg.Instantiate()
 
 include("src/postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
 include("src/callScripts.jl")
@@ -8,18 +12,10 @@ include("src/generator.jl")
 include("src/Model.jl")
 include("src/misc.jl")
 
+
 import CSV , Query
 using DotEnv,  .postgresWrapper, ArgParse, .callScripts, Match, DataFrames, .generator, Dates, .model
 DotEnv.config()
-
-# todo [x]  every week call generate_games for days_ago=10
-# todo [x]  insert games in db
-# todo [x]  every hours get incoming games
-# todo [x]  insert it
-# todo [x]  update_meta every week (depending on the amount of query (set in next todo))
-# todo [ ]  predict these games
-
-# todo setup julia dans docker
 
 function parse_commandline()
     s = ArgParseSettings()
