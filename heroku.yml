@@ -1,5 +1,5 @@
 build:
   docker:
-    web: Dockerfile
+    worker: Dockerfile
 run:
-  web: julia --project=. main.jl
+  worker: julia --project=. main.jl

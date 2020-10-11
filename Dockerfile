@@ -9,7 +9,7 @@ WORKDIR /app
 
 # RUN julia --project=. /tmp/packageInstall.jl
 
-RUN julia --project=. -e "using Pkg; Pkg.instantiate()"
+RUN julia --project=/app -e "using Pkg; Pkg.instantiate()"
 # julia -e "Pkg.using("")"
 #     julia -e "Pkg.update()" && \
 #     julia -e "Pkg.add("CSV")" && \
