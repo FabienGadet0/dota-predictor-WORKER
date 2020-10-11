@@ -1,4 +1,12 @@
 using Pkg
+Pkg.build("Conda")
+
+using Conda
+Conda.add("pandas", Conda.ROOTENV)
+Conda.add("numpy", Conda.ROOTENV)
+Conda.add("requests", Conda.ROOTENV)
+Conda.add("termcolor", Conda.ROOTENV)
+
 Pkg.instantiate()
 
 include("src/postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
