@@ -60,13 +60,7 @@ git-tree-sha1 = "6e8781b9edc24f17154742ed7966a42c5dad9e35"
 uuid = "6710c13c-97f1-543f-91c5-74e8f7d95b35"
 version = "1.2.3"
 
-[[AutoML]]
-deps = ["ArgParse", "CSV", "CodecZlib", "DataFrames", "Dates", "Images", "Knet", "MAT", "Pkg", "Plots", "PyCall", "Random", "SpecialFunctions", "Statistics", "StatsBase", "YAML"]
-git-tree-sha1 = "95631eabc166d5e4882580572a131a70b73b4302"
-repo-rev = "master"
-repo-url = "https://github.com/alperkesen/AutoML.jl"
-uuid = "9cb3cefc-9d74-11e9-126a-fdc13771fa31"
-version = "0.1.0"
+
 
 [[AxisAlgorithms]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "WoodburyMatrices"]
@@ -792,12 +786,6 @@ git-tree-sha1 = "07cb43290a840908a771552911a6274bc6c072c7"
 uuid = "e5e0dc1b-0480-54bc-9374-aad01c23163d"
 version = "0.8.4"
 
-[[Knet]]
-deps = ["AutoGrad", "CUDA", "FileIO", "JLD2", "Libdl", "LinearAlgebra", "NNlib", "Pkg", "Printf", "Random", "SpecialFunctions", "Statistics"]
-git-tree-sha1 = "ff2308a476ef1a5baac3536246acbc171c117338"
-uuid = "1902f260-5fb4-5aff-8c31-6271790ab950"
-version = "1.4.2"
-
 [[LAME_jll]]
 deps = ["Libdl", "Pkg"]
 git-tree-sha1 = "a7999edc634307964d5651265ebf7c2e14b4ef91"
@@ -984,11 +972,7 @@ git-tree-sha1 = "416311072e8c71d8fe54867dcb06606865d36948"
 uuid = "2e2323e0-db8b-457b-ae0d-bdfb3bc63afd"
 version = "0.3.0"
 
-[[MLJScikitLearnInterface]]
-deps = ["MLJModelInterface", "PyCall", "ScikitLearn"]
-git-tree-sha1 = "9202b249509ec05fd8a5e71b278f42b491f4f324"
-uuid = "5ae90465-5518-4432-b9d2-8a1def2f0cab"
-version = "0.1.5"
+
 
 [[MLJTuning]]
 deps = ["ComputationalResources", "Distributed", "Distributions", "MLJBase", "MLJModelInterface", "ProgressMeter", "Random", "RecipesBase"]
@@ -1260,11 +1244,7 @@ git-tree-sha1 = "4cff8da83f89e06eeae5b81307a08bb33a96a602"
 uuid = "92933f4c-e287-5a05-a399-4b506db050ca"
 version = "1.4.0"
 
-[[PyCall]]
-deps = ["Conda", "Dates", "Libdl", "LinearAlgebra", "MacroTools", "Serialization", "VersionParsing"]
-git-tree-sha1 = "b6dff5fa725eff4f775f472acd86756d6e31fb02"
-uuid = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
-version = "1.92.1"
+
 
 [[QuadGK]]
 deps = ["DataStructures", "LinearAlgebra"]
@@ -1405,11 +1385,6 @@ git-tree-sha1 = "b06fff5c17a20aa69494a3d9da62d9c88ec6b764"
 uuid = "321657f4-b219-11e9-178b-2701a2544e81"
 version = "1.1.0"
 
-[[ScikitLearn]]
-deps = ["Compat", "Conda", "DataFrames", "Distributed", "IterTools", "LinearAlgebra", "MacroTools", "Parameters", "Printf", "PyCall", "Random", "ScikitLearnBase", "SparseArrays", "StatsBase", "VersionParsing"]
-git-tree-sha1 = "b2dbb141575879beb3ad771fb0314a22617586d3"
-uuid = "3646fa90-6ef7-5e7e-9f22-8aca16db6324"
-version = "0.6.2"
 
 [[ScikitLearnBase]]
 deps = ["LinearAlgebra", "Random", "Statistics"]
