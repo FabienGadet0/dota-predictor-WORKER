@@ -340,6 +340,3 @@ def get_live():
                    sort=False).drop_duplicates(subset="match_id")
     df.to_csv('./data/live_games.csv', index=False)
     return len(df)
-
-
-get_live()

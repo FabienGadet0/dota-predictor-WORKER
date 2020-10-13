@@ -20,7 +20,7 @@ class Csv_generator(Api_handler):
 
     def generate_meta(self):
         all_func = [self.generate_teams, self.generate_heroes_meta,
-                    self.generate_heroes_matchups, self.generate_heroes_matchups_from_stratz, self.generate_players_w_heroes_synergy, self.generate_players_peers]
+                    self.generate_heroes_matchups, self.generate_heroes_matchups_from_stratz, self.generate_players_w_heroes_synergy]  # , self.generate_players_peers]
         # all_func = [self.generate_players_w_heroes_synergy, self.generate_players_peers, self.generate_teams, self.generate_heroes_meta,self.generate_heroes_matchups,self.generate_heroes_matchups_from_stratz]
         pool = Pool(len(all_func))
         for func in all_func:

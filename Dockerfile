@@ -8,6 +8,7 @@ COPY . /app
 WORKDIR /app
 
 # RUN julia --project=. /tmp/packageInstall.jl
+ENV PYTHON=
 
 RUN julia --project=/app -e "using Pkg; Pkg.instantiate()"
 # julia -e "Pkg.using("")"

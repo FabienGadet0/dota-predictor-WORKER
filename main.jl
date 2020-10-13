@@ -1,14 +1,3 @@
-using Pkg
-Pkg.build("Conda")
-
-using Conda
-Conda.add("pandas", Conda.ROOTENV)
-Conda.add("numpy", Conda.ROOTENV)
-Conda.add("requests", Conda.ROOTENV)
-Conda.add("termcolor", Conda.ROOTENV)
-
-Pkg.instantiate()
-
 include("src/postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
 include("src/callScripts.jl")
 include("src/generator.jl")
@@ -47,19 +36,19 @@ function handle_commandline(arg, value)
     ("generate-meta", b::Bool)   => (b && Dates.dayofweek(now()) === 1) ? generator.call_generate_meta() : nothing
     ("generate-live", b::Bool)   => b ? generator.call_generate_live() : nothing
     ("predict-all", b::Bool)   => b ? model.predictForEach() : nothing
+    ("generate-and-predict", b::Bool)   => b ? generateAndPredict()  : nothing
     bad                          => println("Unknown argument: $bad")
     end
 end
 
+function generateAndPredict()
+    generator.call_generate_games(1)
+    generator.call_generate_live()
+    model.predictForEach() 
+end
+
 
 function main()
-    @info "SALUT"
-    @info "SALUT"
-    @info "SALUT"
-    @info "SALUT"
-    @info "SALUT"
-    @info "SALUT"
-    println("testetetetqerqwmemqwnemqwnemqwemn")
     parsed_args = parse_commandline()
     @debug parsed_args
     for (arg, val) in parsed_args
