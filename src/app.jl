@@ -1,8 +1,8 @@
-include("src/postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
-include("src/callScripts.jl")
-include("src/generator.jl")
-include("src/Model.jl")
-include("src/misc.jl")
+include("postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
+include("callScripts.jl")
+include("generator.jl")
+include("Model.jl")
+include("misc.jl")
 
 
 import CSV , Query

@@ -14,3 +14,4 @@ tester.jl
 NOTE
 dockergenerator.jl
 test/
+Manifest.toml

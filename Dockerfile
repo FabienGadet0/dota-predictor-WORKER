@@ -11,7 +11,7 @@ WORKDIR /app
 ENV PYTHON=
 RUN julia -e "using Pkg;Pkg.add(\"PyCall\");Pkg.build(\"PyCall\")"
 
-RUN julia --project=/app -e "using Pkg; Pkg.instantiate()"
+RUN julia --project -e "using Pkg; Pkg.instantiate()"
 # julia -e "Pkg.using("")"
 #     julia -e "Pkg.update()" && \
 #     julia -e "Pkg.add("CSV")" && \
