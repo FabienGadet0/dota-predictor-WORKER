@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: julia --project=/app main.jl
+  web: julia --project main.jl --generate-games 1

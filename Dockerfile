@@ -9,6 +9,7 @@ WORKDIR /app
 
 # RUN julia --project=. /tmp/packageInstall.jl
 ENV PYTHON=
+RUN julia -e "using Pkg;Pkg.add(\"PyCall\");Pkg.build(\"PyCall\")"
 
 RUN julia --project=/app -e "using Pkg; Pkg.instantiate()"
 # julia -e "Pkg.using("")"
