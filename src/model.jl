@@ -83,11 +83,11 @@ function trainAll!()
 end
 
 
-    function get_proba(predictions)
-    pdf.(predictions, "radiant_team")
+function get_proba(predictions)
+    map(x -> x < 0.5 ? 1 - x : x, pdf.(predictions, "radiant_team"))
 end
 
-    function pred(modelName, X)
+function pred(modelName, X)
     mach = machine("models/$(modelName).jlso")
     predictions = predict(mach, X)
     predictions_name = mode.(predictions)
@@ -95,7 +95,7 @@ end
     [predictions_name, predictions_proba]
 end
 
-    function predictForEach(df=DataFrame(), returnValues=false)
+function predictForEach(df=DataFrame(), returnValues=false)
     # ? For each jlso in models , predict with it
     db = postgresWrapper.DbConstructor()
     tmp = DataFrame()
@@ -104,14 +104,14 @@ end
     files = map(x -> x[2] == "jlso" ? x[1] : nothing, files)
 
     if nrow(df) == 0
-        df = getPredictions(db) |> cleanData
+        df = @linq getPredictions(db) |> select(vcat(postgresWrapper.MODEL_FEATURES, "match_id"))  |> cleanData
     end
 
     if nrow(df) > 0 && length(files) > 0
-        X =  @linq df |> select(postgresWrapper.MODEL_FEATURES)
+        X = df[Not(:match_id)]
         for modelName in files
             p = pred(modelName, X)
-            tmp["predict_proba"] = map(x -> x < 0.5 ? 1 - x : x, p[2])
+            tmp["predict_proba"] = p[2]
             tmp["predict_name"] = p[1]
             tmp["model_name"] = modelName
             tmp["match_id"] = df["match_id"]
