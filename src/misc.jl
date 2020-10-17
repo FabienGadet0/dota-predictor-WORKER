@@ -14,4 +14,4 @@
 # end
 
 
-_countmissings(df) = DataFrame(zip(names(df), colwise(x -> sum(ismissing.(x)), df)))
+_countmissings(df) = filter(x -> x[:2] !== 0, DataFrame(zip(names(df), colwise(x -> sum(ismissing.(x)), df))))

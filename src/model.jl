@@ -17,6 +17,10 @@ function getPredictions(db)
     postgresWrapper.execQueryFromFile(db, "queries/get_new_predictions.sql")[Not([:fill_na, :winner_name])]
 end
 
+function getLastWeekDataForTrain(db)
+    postgresWrapper.execQueryFromFile(db, "queries/get_last_week_games.sql")[Not(:fill_na)]
+end
+
 
 function checkMissings(df)
     d = @where(_countmissings(df),:2 .> nrow(df) / 3)
@@ -59,17 +63,31 @@ function train!(modelName, df)
     X, y, train, test = prepareUnpack(df)
     mach = machine("models/$modelName.jlso", X, y)
     fit!(mach, rows=train, verbosity=2)
-    evaluate!(machine("models/test.jlso", X, y),resampling=CV(nfolds=6),
-                 measures=[cross_entropy, brier_score])
+    @info "Training Model $modelName with $(nrow(df)) lines"
+    @info "(cross_entropy , brier_score)"
+    @info (evaluate!(mach,resampling=CV(nfolds=6),
+                 measures=[cross_entropy, brier_score]))
     MLJ.save("models/$(modelName).jlso", mach)
 end
 
+function trainAll!()
+    db = postgresWrapper.DbConstructor()
+    df = getLastWeekDataForTrain(db) |> cleanData
+    files = split.(readdir("models/"), ".")
+    files = map(x -> x[2] == "jlso" ? x[1] : nothing, files)
+    if nrow(df) > 0 && length(files) > 0
+        for modelName in files
+            train!(modelName, df)
+        end
+    end
+end
 
-function get_proba(predictions)
+
+    function get_proba(predictions)
     pdf.(predictions, "radiant_team")
 end
 
-function pred(modelName, X)
+    function pred(modelName, X)
     mach = machine("models/$(modelName).jlso")
     predictions = predict(mach, X)
     predictions_name = mode.(predictions)
@@ -77,7 +95,7 @@ function pred(modelName, X)
     [predictions_name, predictions_proba]
 end
 
-function predictForEach(df=DataFrame(), returnValues=false)
+    function predictForEach(df=DataFrame(), returnValues=false)
     # ? For each jlso in models , predict with it
     db = postgresWrapper.DbConstructor()
     tmp = DataFrame()
@@ -93,7 +111,7 @@ function predictForEach(df=DataFrame(), returnValues=false)
         X =  @linq df |> select(postgresWrapper.MODEL_FEATURES)
         for modelName in files
             p = pred(modelName, X)
-            tmp["predict_proba"] = p[2]
+            tmp["predict_proba"] = map(x -> x < 0.5 ? 1 - x : x, p[2])
             tmp["predict_name"] = p[1]
             tmp["model_name"] = modelName
             tmp["match_id"] = df["match_id"]
