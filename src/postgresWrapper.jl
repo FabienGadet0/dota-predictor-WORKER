@@ -51,6 +51,20 @@ const MODEL_FEATURES = ["dire_team_heroes_meta_points"
 ,"radiant_team_peers_score"
 ,"dire_team_peers_score"]
 
+const TEST_MODEL_FEATURES = ["dire_team_heroes_meta_points"
+,"radiant_team_heroes_meta_points"
+,"dire_team_matchup_score"
+,"radiant_team_matchup_score"
+,"dire_team_synergy_with"
+,"radiant_team_synergy_with"
+,"dire_team_synergy_against"
+,"radiant_team_synergy_against"
+,"dire_team_winrate_with"
+,"radiant_team_winrate_with"
+,"dire_team_winrate_against"
+,"radiant_team_winrate_against"
+]
+
 
 struct dbClass
     conn::LibPQ.Connection
@@ -69,7 +83,7 @@ end
 
 function execQueryFromFile(db::dbClass, file_path::String)
     @debug "Exec Query from file : $file" 
-    @info file_path
+    @debug file_path
     open(file_path) do f
         query = Base.read(f, String)
         return DataFrame(LibPQ.execute(db.conn, query))
@@ -93,7 +107,7 @@ function write(db::dbClass, df, tableName)
     for col in filter(x -> !(x in names(df)), names(alreadyInDb))
         df[col] = missing
     end
-    toInsert = @linq vcat(df, alreadyInDb) |> unique(:match_id)
+    toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id, :model_name])
     if nrow(toInsert) > 0
         LibPQ.execute(db.conn, "truncate $tableName;")
         row_names = join(string.(Tables.columnnames(toInsert)), ",")

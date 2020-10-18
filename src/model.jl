@@ -59,7 +59,7 @@ function prepareUnpack(df)
 end
 
 function train!(modelName, df)
-    df = @linq df |> select(vcat(postgresWrapper.MODEL_FEATURES, "winner"))
+    # df = @linq df |> select(vcat(postgresWrapper.MODEL_FEATURES, "winner")) |> cleanData
     X, y, train, test = prepareUnpack(df)
     mach = machine("models/$modelName.jlso", X, y)
     fit!(mach, rows=train, verbosity=2)
@@ -72,11 +72,14 @@ end
 
 function trainAll!()
     db = postgresWrapper.DbConstructor()
-    df = getLastWeekDataForTrain(db) |> cleanData
+    df = @linq getLastWeekDataForTrain(db) |> select(postgresWrapper.MODEL_FEATURES) |> cleanData
     files = split.(readdir("models/"), ".")
     files = map(x -> x[2] == "jlso" ? x[1] : nothing, files)
     if nrow(df) > 0 && length(files) > 0
         for modelName in files
+            if modelName == "test_classifier"
+                df = @linq getLastWeekDataForTrain(db) |> select(postgresWrapper.TEST_MODEL_FEATURES) |> cleanData
+            end
             train!(modelName, df)
         end
     end
@@ -98,7 +101,7 @@ end
 function predictForEach(df=DataFrame(), returnValues=false)
     # ? For each jlso in models , predict with it
     db = postgresWrapper.DbConstructor()
-    tmp = DataFrame()
+
     results = DataFrame()
     files = split.(readdir("models/"), ".")
     files = map(x -> x[2] == "jlso" ? x[1] : nothing, files)
@@ -110,6 +113,11 @@ function predictForEach(df=DataFrame(), returnValues=false)
     if nrow(df) > 0 && length(files) > 0
         X = df[Not(:match_id)]
         for modelName in files
+            tmp = DataFrame()
+            if modelName == "test_classifier"
+                df = @linq getPredictions(db) |> select(vcat(postgresWrapper.TEST_MODEL_FEATURES, "match_id"))  |> cleanData
+                X = df[Not(:match_id)]
+            end
             p = pred(modelName, X)
             tmp["predict_proba"] = p[2]
             tmp["predict_name"] = p[1]
@@ -124,8 +132,11 @@ function predictForEach(df=DataFrame(), returnValues=false)
     returnValues ? results : nrow(results)
 end
 
-
+# ? Load fresh model
 # model = load(pkg="ScikitLearn", "RandomForestClassifier")
+
+# ? Get all datas 
+# df = @linq postgresWrapper.execQuery(db, "select t.*, g.winner from technical_data t inner join games g on g.match_id = t.match_id") |> DataFrame |> select(vcat(TEST_MODEL_FEATURES, "winner")) |> cleanData
 
 # # ? Save
 # MLJ.save("models/first_classifier.jlso", mach)
