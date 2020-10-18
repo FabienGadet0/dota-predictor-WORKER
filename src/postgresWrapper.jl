@@ -61,18 +61,26 @@ function read(db::dbClass, tableName, limit=500000000)
     LibPQ.execute(db.conn, "select * from  $tableName limit $limit;")
 end
 
-function write(db::dbClass, df, tableName)
+function write(db::dbClass, df, tableName, timestamp_col="")
     _prepare_field(x::Any) = x
     _prepare_field(x::Missing) = ""
     _prepare_field(x::AbstractString) = string("\"", replace(x, "\"" => "\"\""), "\"")
 
-    alreadyInDb = read(db, tableName) |> DataFrame
+    if timestamp_col != ""
+        df["inserted_date"] = now()
+    end
+
+    alreadyInDb = @linq read(db, tableName) |> DataFrame |> sort(:inserted_date, rev=true)
 
     missingsColumns = filter(x -> !(x in names(df)), names(alreadyInDb))
     for col in filter(x -> !(x in names(df)), names(alreadyInDb))
         df[col] = missing
     end
-    toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id, :model_name])
+    if tableName == "prediction"
+        toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id, :model_name])
+    else
+        toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id])
+    end
     if nrow(toInsert) > 0
         LibPQ.execute(db.conn, "truncate $tableName;")
         row_names = join(string.(Tables.columnnames(toInsert)), ",")
@@ -87,15 +95,15 @@ function write(db::dbClass, df, tableName)
 end
 
 
-function close(db::dbClass)
+    function close(db::dbClass)
     LibPQ.close(db.conn)
 end
 
-function get_all_new_prediction(db)
+    function get_all_new_prediction(db)
     df = execQuery(db, query)
 end
 
-function file_to_db(db::dbClass, path_to_csv::String)
+    function file_to_db(db::dbClass, path_to_csv::String)
     df = @linq CSV.read(path_to_csv) |> DataFrame
     if nrow(df) == 0
         @warn "$path_to_csv is empty, nothing to insert"
@@ -122,8 +130,8 @@ function file_to_db(db::dbClass, path_to_csv::String)
         select(technical_data_columns)
 
     games["inserted_date"] = now()
-    postgresWrapper.write(db, technical_data, "technical_data")
-    postgresWrapper.write(db, games, "games")
+    postgresWrapper.write(db, technical_data, "technical_data", "inserted_date")
+    postgresWrapper.write(db, games, "games", "inserted_date")
 
     nrow(games) 
 end

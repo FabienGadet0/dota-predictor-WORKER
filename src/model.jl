@@ -34,7 +34,7 @@ end
 
 
 function cleanData(df)
-    dropmissing!(df)
+    dropmissing(df)
     # ? Alternative is fillna(mean)
 end
 
@@ -147,12 +147,12 @@ function predictForEach(df=DataFrame(), returnValues=false)
                 tmp["predict_name"] = p[1]
                 tmp["predict_proba"] = p[2]
                 tmp["model_name"] = modelName
-                tmp["match_id"] = df["match_id"]
+                tmp["match_id"] = toPredict["match_id"]
                 results = vcat(tmp, results)
             end
         end
-        results["inserted_date"] = now()
-        postgresWrapper.write(db, results, "prediction")
+
+        postgresWrapper.write(db, results, "prediction", "inserted_date")
         postgresWrapper.close(db)
     end
     returnValues ? results : nrow(results)

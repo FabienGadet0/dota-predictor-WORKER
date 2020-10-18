@@ -53,7 +53,7 @@ end
 function generateAndPredict()
     generator.call_generate_games(1)
     generator.call_generate_live()
-    model.predictForEach() 
+    model.predictForEach()
 end
 
 
