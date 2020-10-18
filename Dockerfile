@@ -5,9 +5,9 @@ WORKDIR /app/app
 
 ENV PYTHON=
 # RUN julia -e "using Pkg; ; pkg\"activate . \"; Pkg.add(\"PyCall\") ; Pkg.build(\"PyCall\")"
-RUN julia -e "using Pkg; pkg\"activate . \"; pkg\"instantiate\";"
-RUN julia -e "using Pkg; pkg\"activate . \"; using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
+RUN julia --project=. -e "using Pkg;  pkg\"instantiate\";"
+RUN julia --project=. -e " using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
 
-EXPOSE 8000:8000
+EXPOSE 4000:4000
 
 ENTRYPOINT ["julia", "--project=.", "src/app.jl" , "--serve"]

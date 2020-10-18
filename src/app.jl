@@ -45,7 +45,7 @@ function handle_commands(arg, value)
     ("predict-all", b::Bool)            => b ? model.predictForEach()                                           : nothing
     ("generate-and-predict", b::Bool)   => b ? generateAndPredict()                                             : nothing
     ("train-all", n::Int)               => (n > 0 && Dates.dayofweek(now()) === 1) ? model.trainAll!()          : nothing
-    ("serve", b::Bool)        => b ? server.runServer()                                               : nothing
+    ("serve", b::Bool)                  => b ? server.runServer()                                               : nothing
     bad                                 => println("Unknown argument: $bad")
     end
 end
