@@ -5,6 +5,7 @@ include("postgresWrapper.jl")
 
 
 using .postgresWrapper, Match, DataFrames, Dates, DataFramesMeta
+using JSON
 using MLJ, MLJScikitLearnInterface
 
 
@@ -59,30 +60,52 @@ function prepareUnpack(df)
 end
 
 function train!(modelName, df)
-    # df = @linq df |> select(vcat(postgresWrapper.MODEL_FEATURES, "winner")) |> cleanData
     X, y, train, test = prepareUnpack(df)
-    mach = machine("models/$modelName.jlso", X, y)
+    mach = machine("models/files/$modelName.jlso", X, y)
     fit!(mach, rows=train, verbosity=2)
     @info "Training Model $modelName with $(nrow(df)) lines"
+    evaluation = evaluate!(mach,resampling=CV(nfolds=6),
+                 measures=[cross_entropy, brier_score])
+    MLJ.save("models/files/$(modelName).jlso", mach)
+
     @info "(cross_entropy , brier_score)"
-    @info (evaluate!(mach,resampling=CV(nfolds=6),
-                 measures=[cross_entropy, brier_score]))
-    MLJ.save("models/$(modelName).jlso", mach)
+    @info evaluation
+    evaluation
+end
+
+function loadSettings(modelName::String)
+    try
+        f = open(f -> read(f, String), "models/config/$modelName.json")
+        return JSON.parse(f)
+    catch _
+        return nothing
+    end
+end
+
+function getDfReadyForModel(modelName, df, addFeatures=[])
+    features = loadSettings(modelName)["features"]
+    if !isnothing(features)
+        return @linq df |> select(vcat(features, addFeatures)) |> cleanData
+    end
+    return nothing
 end
 
 function trainAll!()
     db = postgresWrapper.DbConstructor()
-    df = @linq getLastWeekDataForTrain(db) |> select(postgresWrapper.MODEL_FEATURES) |> cleanData
-    files = split.(readdir("models/"), ".")
-    files = map(x -> x[2] == "jlso" ? x[1] : nothing, files)
-    if nrow(df) > 0 && length(files) > 0
-        for modelName in files
-            if modelName == "test_classifier"
-                df = @linq getLastWeekDataForTrain(db) |> select(postgresWrapper.TEST_MODEL_FEATURES) |> cleanData
+    df = getLastWeekDataForTrain(db)
+    results = []
+    models = getModels()
+    if nrow(df) > 0 && length(models) > 0
+        for modelName in models
+            toTrain = getDfReadyForModel(modelName, df, ["winner"])
+            if nrow(toTrain) > 0
+                e = train!(modelName, toTrain)
+                evals = zip(string.(e.measure), e.measurement) |> collect
+                push!(results, (:model_name => modelName, :evaluations => evals))
             end
-            train!(modelName, df)
         end
     end
+    results
 end
 
 
@@ -91,11 +114,16 @@ function get_proba(predictions)
 end
 
 function pred(modelName, X)
-    mach = machine("models/$(modelName).jlso")
+    mach = machine("models/files/$(modelName).jlso")
     predictions = predict(mach, X)
     predictions_name = mode.(predictions)
     predictions_proba = get_proba(predictions)
     [predictions_name, predictions_proba]
+end
+
+function getModels()
+    files = split.(readdir("models/files"), '.')
+    map(x -> x[2] == "jlso" ? string(x[1]) : nothing, files)
 end
 
 function predictForEach(df=DataFrame(), returnValues=false)
@@ -103,27 +131,25 @@ function predictForEach(df=DataFrame(), returnValues=false)
     db = postgresWrapper.DbConstructor()
 
     results = DataFrame()
-    files = split.(readdir("models/"), ".")
-    files = map(x -> x[2] == "jlso" ? x[1] : nothing, files)
-
+    models = getModels()
     if nrow(df) == 0
-        df = @linq getPredictions(db) |> select(vcat(postgresWrapper.MODEL_FEATURES, "match_id"))  |> cleanData
+        df = getPredictions(db)
     end
 
-    if nrow(df) > 0 && length(files) > 0
+    if nrow(df) > 0 && length(models) > 0
         X = df[Not(:match_id)]
-        for modelName in files
+        for modelName in models
             tmp = DataFrame()
-            if modelName == "test_classifier"
-                df = @linq getPredictions(db) |> select(vcat(postgresWrapper.TEST_MODEL_FEATURES, "match_id"))  |> cleanData
-                X = df[Not(:match_id)]
+            toPredict = getDfReadyForModel(modelName, df, ["match_id"])
+            X = toPredict[Not(:match_id)]
+            if nrow(toPredict) > 0
+                p = pred(modelName, X)
+                tmp["predict_name"] = p[1]
+                tmp["predict_proba"] = p[2]
+                tmp["model_name"] = modelName
+                tmp["match_id"] = df["match_id"]
+                results = vcat(tmp, results)
             end
-            p = pred(modelName, X)
-            tmp["predict_proba"] = p[2]
-            tmp["predict_name"] = p[1]
-            tmp["model_name"] = modelName
-            tmp["match_id"] = df["match_id"]
-            results = vcat(tmp, results)
         end
         results["inserted_date"] = now()
         postgresWrapper.write(db, results, "prediction")

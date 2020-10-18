@@ -3,10 +3,11 @@ include("callScripts.jl")
 include("generator.jl")
 include("Model.jl")
 include("misc.jl")
+include("server.jl")
 
 
 import CSV , Query
-using DotEnv,  .postgresWrapper, ArgParse, .callScripts, Match, DataFrames, .generator, Dates, .model
+using DotEnv,  .postgresWrapper, ArgParse, .callScripts, Match, DataFrames, .generator, Dates, .model, .server
 DotEnv.config()
 
 function parse_commandline()
@@ -30,23 +31,25 @@ function parse_commandline()
             help = "Train all models with last n days data"
             arg_type = Int
             default = 0
-
+        "--run-as-a-server"
+            action = :store_true
     end
 return parse_args(s)
 end
-
-function handle_commandline(arg, value)
+    
+function handle_commands(arg, value)
     @match (arg, value) begin
-    ("generate-games", n::Int)          => n > 0 ? generator.call_generate_games(n) : nothing
+    ("generate-games", n::Int)          => n > 0 ? generator.call_generate_games(n)                             : nothing
     ("generate-meta", b::Bool)          => (b && Dates.dayofweek(now()) === 1) ? generator.call_generate_meta() : nothing
-    ("generate-live", b::Bool)          => b ? generator.call_generate_live() : nothing
-    ("predict-all", b::Bool)            => b ? model.predictForEach() : nothing
-    ("generate-and-predict", b::Bool)   => b ? generateAndPredict()  : nothing
-    ("train-all", n::Int)               => (n > 0 && Dates.dayofweek(now()) === 1) ? model.trainAll!()  : nothing
+    ("generate-live", b::Bool)          => b ? generator.call_generate_live()                                   : nothing
+    ("predict-all", b::Bool)            => b ? model.predictForEach()                                           : nothing
+    ("generate-and-predict", b::Bool)   => b ? generateAndPredict()                                             : nothing
+    ("train-all", n::Int)               => (n > 0 && Dates.dayofweek(now()) === 1) ? model.trainAll!()          : nothing
+    ("run-as-a-server", b::Bool)        => b ? server.runServer()                                               : nothing
     bad                                 => println("Unknown argument: $bad")
     end
 end
-    
+
 function generateAndPredict()
     generator.call_generate_games(1)
     generator.call_generate_live()
@@ -59,7 +62,7 @@ function main()
     @debug parsed_args
     for (arg, val) in parsed_args
         @debug "$arg  =>  $val"
-        handle_commandline(arg, val)
+    handle_commands(arg, val)
     end
 end
 
