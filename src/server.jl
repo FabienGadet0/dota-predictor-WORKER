@@ -34,7 +34,7 @@ function runServer()
         (:code => 0, :data => results) |> json
     end
     
-    Genie.startup()
+    Genie.startup(get(ENV, "PORT", 4000))
 end
 
 end

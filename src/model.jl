@@ -6,7 +6,7 @@ include("postgresWrapper.jl")
 
 using .postgresWrapper, Match, DataFrames, Dates, DataFramesMeta
 using JSON
-using MLJ, MLJScikitLearnInterface
+using MLJ , MLJScikitLearnInterface
 
 
 _countmissings(df) = DataFrame(zip(names(df), colwise(x -> sum(ismissing.(x)), df)))
@@ -66,7 +66,7 @@ function train!(modelName, df)
     @info "Training Model $modelName with $(nrow(df)) lines"
     evaluation = evaluate!(mach,resampling=CV(nfolds=6),
                  measures=[cross_entropy, brier_score])
-    MLJ.save("models/files/$(modelName).jlso", mach)
+    # MLJ.save("models/files/$(modelName).jlso", mach)
 
     @info "(cross_entropy , brier_score)"
     @info evaluation

@@ -10,4 +10,4 @@ RUN julia -e "using Pkg; pkg\"activate . \"; using Conda; Conda.add(\"pandas\", 
 
 EXPOSE 8000:8000
 
-ENTRYPOINT ["julia", "--project", "src/app.jl" , "--run-as-a-server"]
+ENTRYPOINT ["julia", "--project=.", "src/app.jl" , "--serve"]

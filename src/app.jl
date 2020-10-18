@@ -1,7 +1,7 @@
 include("postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
 include("callScripts.jl")
 include("generator.jl")
-include("Model.jl")
+include("model.jl")
 include("misc.jl")
 include("server.jl")
 
@@ -30,8 +30,8 @@ function parse_commandline()
         "--train-all"
             help = "Train all models with last n days data"
             arg_type = Int
-            default = 0
-        "--run-as-a-server"
+        default = 0
+        "--serve"
             action = :store_true
     end
 return parse_args(s)
@@ -45,7 +45,7 @@ function handle_commands(arg, value)
     ("predict-all", b::Bool)            => b ? model.predictForEach()                                           : nothing
     ("generate-and-predict", b::Bool)   => b ? generateAndPredict()                                             : nothing
     ("train-all", n::Int)               => (n > 0 && Dates.dayofweek(now()) === 1) ? model.trainAll!()          : nothing
-    ("run-as-a-server", b::Bool)        => b ? server.runServer()                                               : nothing
+    ("serve", b::Bool)        => b ? server.runServer()                                               : nothing
     bad                                 => println("Unknown argument: $bad")
     end
 end
