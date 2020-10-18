@@ -1,2 +1,1 @@
-web: julia --project main.jl --generate-games 1
-worker: julia --project main.jl --generate-live
+web: julia --project=. src/app.jl --run-as-a-server
