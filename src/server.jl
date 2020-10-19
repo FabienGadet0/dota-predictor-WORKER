@@ -21,6 +21,13 @@ function runServer()
 
     route("/generate-live") do
         rows = generator.call_generate_live()    
+        model.predictForEach() 
+        (:code => 0,  :data => (:rows_inserted => rows)) |> json
+    end
+
+    route("/generate-recent-games/:nb_days") do
+        generator.call_generate_games(payload(nb_days))
+        rows = model.predictForEach() 
         (:code => 0,  :data => (:rows_inserted => rows)) |> json
     end
 
