@@ -41,7 +41,7 @@ function runServer()
         (:code => 0, :data => results) |> json
     end
 
-    Genie.config.server_port = parse(Int64, get(ENV, "PORT", 8000))
+    Genie.config.server_port = parse(Int64, get(ENV, "PORT", "8000"))
     @info "Running on port $(Genie.config.server_port)"
     Genie.startup()
 end
