@@ -1,7 +1,7 @@
 FROM julia:1.5.2-buster
 
-COPY . /app/app
-WORKDIR /app/app
+COPY . /app
+WORKDIR /app
 
 ENV PYTHON=
 # RUN julia -e "using Pkg; ; pkg\"activate . \"; Pkg.add(\"PyCall\") ; Pkg.build(\"PyCall\")"
@@ -11,4 +11,4 @@ RUN julia --project=. -e " using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Co
 EXPOSE 8000
 
 # ENTRYPOINT ["julia", "--project=."]
-ENTRYPOINT ["julia", "--project=.", "src/app.jl" , "--serve"]
+CMD ["julia", "--project=.", "src/app.jl" , "--serve"]
