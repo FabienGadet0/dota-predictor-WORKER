@@ -8,6 +8,7 @@ ENV PYTHON=
 RUN julia --project=. -e "using Pkg;  pkg\"instantiate\";"
 RUN julia --project=. -e " using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
 
-EXPOSE 4000
+EXPOSE 8000
 
+# ENTRYPOINT ["julia", "--project=."]
 ENTRYPOINT ["julia", "--project=.", "src/app.jl" , "--serve"]
