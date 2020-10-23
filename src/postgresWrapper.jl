@@ -81,6 +81,7 @@ function write(db::dbClass, df, tableName, timestamp_col="")
     else
         toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id])
     end
+
     if nrow(toInsert) > 0
         LibPQ.execute(db.conn, "truncate $tableName;")
         row_names = join(string.(Tables.columnnames(toInsert)), ",")

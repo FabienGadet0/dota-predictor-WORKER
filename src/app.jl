@@ -40,21 +40,27 @@ end
 function handle_commands(arg, value)
     @match (arg, value) begin
     ("generate-games", n::Int)          => n > 0 ? generator.call_generate_games(n)                             : nothing
-    ("generate-meta", b::Bool)          => (b && Dates.dayofweek(now()) == 1) ? generator.call_generate_meta() : nothing
+    ("generate-meta", b::Bool)          => (b && Dates.dayofweek(now()) == 1) ? generator.call_generate_meta()  : nothing
     ("generate-live", b::Bool)          => b ? generator.call_generate_live()                                   : nothing
     ("predict-all", b::Bool)            => b ? model.predictForEach()                                           : nothing
     ("generate-and-predict", b::Bool)   => b ? generateAndPredict()                                             : nothing
-    ("train-all", n::Int)               => (n > 0 && Dates.dayofweek(now()) == 1) ? model.trainAll!()          : nothing
+    ("train-all", b::Bool)              => (b && Dates.dayofweek(now()) == 1) ? model.trainAll!()               : nothing
     ("serve", b::Bool)                  => b ? server.runServer()                                               : nothing
     bad                                 => println("Unknown argument: $bad")
     end
-end
+    end
 
-function generateAndPredict()
+function generateAllAndPredict()
     generator.call_generate_games(1)
     generator.call_generate_live()
     model.predictForEach()
 end
+
+function generateLiveAndPredict()
+    generator.call_generate_live()
+    model.predictForEach()
+end
+
 
 
 function main()

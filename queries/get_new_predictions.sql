@@ -14,3 +14,4 @@ where
         where
             predict_name is not null
     )
+    and g.start_date > '2020-10-15'
