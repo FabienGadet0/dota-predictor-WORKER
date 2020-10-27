@@ -1,8 +1,8 @@
 module postgresWrapper
 
-import CSV , Query,LibPQ
+import CSV , Query
 using IterTools, Tables, DataFramesMeta, DataFrames , Dates
-
+using LibPQ
 
 const COLUMNS_TO_CHANGE = Dict{String,String}("last_update_time" => "start_date", "start_time" => "start_date") 
 const COLUMNS_TO_CONVERT_TO_INT = ["dire_score", "radiant_score", "first_blood_time", "duration", "radiant_score" , "duration", "match_id"]
@@ -61,50 +61,72 @@ function read(db::dbClass, tableName, limit=500000000)
     LibPQ.execute(db.conn, "select * from  $tableName limit $limit;")
 end
 
+# function write(db::dbClass, df, tableName, timestamp_col="")
+#     _prepare_field(x::Any) = x
+#     _prepare_field(x::Missing) = ""
+#     _prepare_field(x::AbstractString) = string("\"", replace(x, "\"" => "\"\""), "\"")
+
+#     if timestamp_col != ""
+#         df["inserted_date"] = now()
+#     end
+
+#     alreadyInDb = @linq read(db, tableName) |> DataFrame |> sort(:inserted_date, rev=true)
+
+#     missingsColumns = filter(x -> !(x in names(df)), names(alreadyInDb))
+#     for col in filter(x -> !(x in names(df)), names(alreadyInDb))
+#         df[col] = missing
+#     end
+#     if tableName == "prediction"
+#         toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id, :model_name])
+#     else
+#         toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id])
+#     end
+
+#     toInsert = dropmissing(df, [:match_id])
+
+#     if nrow(toInsert) > 0
+#         LibPQ.execute(db.conn, "truncate $tableName;")
+#         row_names = join(string.(Tables.columnnames(toInsert)), ",")
+#         row_strings = imap(Tables.eachrow(toInsert)) do row
+#             join((_prepare_field(x) for x in row), ",") * "\n"
+#         end
+#         @debug "Inserting $(nrow(toInsert)) in $tableName)"
+#         copyin = LibPQ.CopyIn("COPY $tableName ($row_names) FROM STDIN (FORMAT CSV) ;", row_strings)
+#         LibPQ.execute(db.conn, copyin, throw_error=false)
+#     end
+#     nrow(toInsert)
+# end
+
+
 function write(db::dbClass, df, tableName, timestamp_col="")
     _prepare_field(x::Any) = x
     _prepare_field(x::Missing) = ""
-    _prepare_field(x::AbstractString) = string("\"", replace(x, "\"" => "\"\""), "\"")
+    _prepare_field(x::AbstractString) = string(replace(x, "\'" => " \""))
 
-    if timestamp_col != ""
-        df["inserted_date"] = now()
-    end
-
-    alreadyInDb = @linq read(db, tableName) |> DataFrame |> sort(:inserted_date, rev=true)
-
-    missingsColumns = filter(x -> !(x in names(df)), names(alreadyInDb))
-    for col in filter(x -> !(x in names(df)), names(alreadyInDb))
-        df[col] = missing
-    end
-    if tableName == "prediction"
-        toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id, :model_name])
-    else
-        toInsert = @linq vcat(df, alreadyInDb) |> unique([:match_id])
-    end
-
+    params = join(names(df), ',')
+    toInsert = dropmissing(_prepare_field(df), [:match_id])
+    valuesPlaceholder = chop(join(["\$" * string(x) * ',' for x in 1:length(names(df))]))
     if nrow(toInsert) > 0
-        LibPQ.execute(db.conn, "truncate $tableName;")
-        row_names = join(string.(Tables.columnnames(toInsert)), ",")
-        row_strings = imap(Tables.eachrow(toInsert)) do row
-            join((_prepare_field(x) for x in row), ",") * "\n"
-        end
-        @debug "Inserting $(nrow(toInsert)) in $tableName)"
-        copyin = LibPQ.CopyIn("COPY $tableName ($row_names) FROM STDIN (FORMAT CSV) ;", row_strings)
-        LibPQ.execute(db.conn, copyin, throw_error=false)
+        execute(db.conn, "BEGIN;")
+        LibPQ.load!(
+        toInsert,
+        db.conn,
+        "INSERT INTO $tableName ($params) VALUES ($valuesPlaceholder) ON CONFLICT DO NOTHING;")
+        execute(db.conn, "COMMIT;")
+        nrow(toInsert)
     end
-    nrow(toInsert)
 end
 
 
-    function close(db::dbClass)
+function close(db::dbClass)
     LibPQ.close(db.conn)
 end
 
-    function get_all_new_prediction(db)
+function get_all_new_prediction(db)
     df = execQuery(db, query)
 end
 
-    function file_to_db(db::dbClass, path_to_csv::String)
+function file_to_db(db::dbClass, path_to_csv::String)
     df = @linq CSV.read(path_to_csv) |> DataFrame
     if nrow(df) == 0
         @warn "$path_to_csv is empty, nothing to insert"

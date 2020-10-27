@@ -29,8 +29,7 @@ function parse_commandline()
             action = :store_true
         "--train-all"
             help = "Train all models with last n days data"
-            arg_type = Int
-        default = 0
+            action = :store_true
         "--serve"
             action = :store_true
     end
@@ -43,7 +42,7 @@ function handle_commands(arg, value)
     ("generate-meta", b::Bool)          => (b && Dates.dayofweek(now()) == 1) ? generator.call_generate_meta()  : nothing
     ("generate-live", b::Bool)          => b ? generator.call_generate_live()                                   : nothing
     ("predict-all", b::Bool)            => b ? model.predictForEach()                                           : nothing
-    ("generate-and-predict", b::Bool)   => b ? generateAndPredict()                                             : nothing
+    ("generate-and-predict", b::Bool)   => b ? generateAllAndPredict()                                          : nothing
     ("train-all", b::Bool)              => (b && Dates.dayofweek(now()) == 1) ? model.trainAll!()               : nothing
     ("serve", b::Bool)                  => b ? server.runServer()                                               : nothing
     bad                                 => println("Unknown argument: $bad")
@@ -72,4 +71,4 @@ function main()
     end
 end
 
-main()
+# main()
