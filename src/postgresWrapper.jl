@@ -98,7 +98,7 @@ end
 # end
 
 
-function write(db::dbClass, df, tableName, timestamp_col="")
+function write(db::dbClass, df, tableName, timestamp_col="", onConflict="")
     _prepare_field(x::Any) = x
     _prepare_field(x::Missing) = ""
     _prepare_field(x::AbstractString) = string(replace(x, "\'" => " \""))
@@ -111,7 +111,7 @@ function write(db::dbClass, df, tableName, timestamp_col="")
         LibPQ.load!(
         toInsert,
         db.conn,
-        "INSERT INTO $tableName ($params) VALUES ($valuesPlaceholder) ON CONFLICT DO NOTHING;")
+        "INSERT INTO $tableName ($params) VALUES ($valuesPlaceholder) $onConflict ;")
         execute(db.conn, "COMMIT;")
         nrow(toInsert)
     end
@@ -152,9 +152,9 @@ function file_to_db(db::dbClass, path_to_csv::String)
     technical_data = @linq df |> 
         select(technical_data_columns)
 
-    games["inserted_date"] = now()
-    postgresWrapper.write(db, technical_data, "technical_data", "inserted_date")
-    postgresWrapper.write(db, games, "games", "inserted_date")
+    # games["inserted_date"] = now()
+    postgresWrapper.write(db, technical_data, "technical_data", "inserted_date", "ON CONFLICT DO NOTHING")
+    postgresWrapper.write(db, games, "games", "inserted_date", "ON CONFLICT DO NOTHING")
 
     nrow(games) 
 end
