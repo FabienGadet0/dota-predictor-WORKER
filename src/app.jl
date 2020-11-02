@@ -24,6 +24,9 @@ function parse_commandline()
         "--generate-live"
             help = "Call python script and generate live games"
             action = :store_true
+        "--generate-and-predict"
+            help = "Call python script and generate live games and predict"
+            action = :store_true
         "--predict-all"
             help = "Get all non predicted games and predict"
             action = :store_true
