@@ -1,7 +1,7 @@
 FROM julia:1.5.2-buster
 
-COPY . /app/app
-WORKDIR /app/app
+COPY . /app
+WORKDIR /app
 
 ENV PYTHON=
 
