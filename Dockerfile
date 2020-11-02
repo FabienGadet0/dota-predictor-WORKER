@@ -25,7 +25,7 @@ RUN julia -e 'using Pkg; Pkg.add("Match") ;'
 RUN julia -e 'using Pkg; Pkg.add("PrettyPrinting") ;' 
 RUN julia -e 'using Pkg; Pkg.add("Query") ;' 
 RUN julia -e 'using Pkg; Pkg.add("PyCall") ;' 
-RUN julia -e 'using Pkg; Pkg.add(Tables");'
+RUN julia -e 'using Pkg; Pkg.add("Tables");'
 
 # RUN julia -e "using Pkg;  pkg\"instantiate\"; pkg\"precompile\";"
 RUN julia -e "using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
