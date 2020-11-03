@@ -15,4 +15,3 @@ NOTE
 dockergenerator.jl
 test/
 Manifest.toml
-Project.toml
