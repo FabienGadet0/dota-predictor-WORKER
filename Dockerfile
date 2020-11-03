@@ -29,7 +29,7 @@ RUN julia --project=. -e 'using Pkg; Pkg.add("Tables");'
 
 # RUN julia -e "using Pkg;  pkg\"instantiate\"; pkg\"precompile\";"
 RUN julia --project=. -e "using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
-RUN julia --project=. -e "using Pkg;  pkg\"build\" ; pkg\"precompile\";"
+RUN julia --project=. -e "using Pkg;  pkg\"instantiate\" ; pkg\"build\" ; pkg\"precompile\";"
 
 # EXPOSE 8000
 
