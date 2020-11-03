@@ -6,7 +6,7 @@ module generator
     include("callScripts.jl")
 
 
-    import CSV , Query
+    import Query
     using .postgresWrapper, .callScripts, DataFrames
 
 function call_generate_meta()

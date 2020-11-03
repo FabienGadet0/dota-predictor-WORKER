@@ -1,6 +1,6 @@
 module postgresWrapper
 
-import CSV , Query
+import Query
 using IterTools, Tables, DataFramesMeta, DataFrames , Dates
 using LibPQ
 

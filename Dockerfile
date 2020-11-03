@@ -7,8 +7,8 @@ ENV PYTHON=
 
 # RUN julia -e "using Pkg; ; pkg\"activate . \"; Pkg.add(\"PyCall\") ; Pkg.build(\"PyCall\")"
 RUN julia --project=. -e 'using Pkg; Pkg.add("ArgParse") ;' 
-RUN julia --project=. -e 'using Pkg; Pkg.add("CSV") ;' 
 RUN julia --project=. -e 'using Pkg; Pkg.add("Conda") ;' 
+RUN julia --project=. -e 'using Pkg; Pkg.add("CSV") ;' 
 RUN julia --project=. -e 'using Pkg; Pkg.add("DataFrames") ;' 
 RUN julia --project=. -e 'using Pkg; Pkg.add("DataFramesMeta") ;' 
 RUN julia --project=. -e 'using Pkg; Pkg.add("Dates") ;' 
@@ -28,8 +28,8 @@ RUN julia --project=. -e 'using Pkg; Pkg.add("PyCall") ;'
 RUN julia --project=. -e 'using Pkg; Pkg.add("Tables");'
 
 # RUN julia -e "using Pkg;  pkg\"instantiate\"; pkg\"precompile\";"
-RUN julia --project=. -e "using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
 RUN julia --project=. -e "using Pkg;  pkg\"instantiate\" ; pkg\"build\" ; pkg\"precompile\";"
+RUN julia --project=. -e "using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
 
 # EXPOSE 8000
 

@@ -6,7 +6,6 @@ include("misc.jl")
 include("server.jl")
 
 
-import CSV , Query
 using DotEnv,  .postgresWrapper, ArgParse, .callScripts, Match, DataFrames, .generator, Dates, .model, .server
 DotEnv.config()
 
