@@ -32,5 +32,5 @@ RUN julia --project=app -e "using Conda; Conda.add(\"pandas\", Conda.ROOTENV); C
 
 # EXPOSE 8000
 
-CMD ["julia", "--project=app", "src/app.jl", "--serve"]
+CMD ["julia", "--project=app", "/app/src/app.jl", "--serve"]
 # ENTRYPOINT ["julia", "--project",  "src/app.jl"]
