@@ -1,10 +1,10 @@
-include("postgresWrapper.jl") # ? Maybe not mandatory to add src cause already in path ?
+include("packageInstall.jl") 
+include("postgresWrapper.jl") 
 include("callScripts.jl")
 include("generator.jl")
 include("model.jl")
 include("misc.jl")
 include("server.jl")
-
 
 
 using DotEnv,  .postgresWrapper, ArgParse, .callScripts, Match, DataFrames, .generator, Dates, .model, .server

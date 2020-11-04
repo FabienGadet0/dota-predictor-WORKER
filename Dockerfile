@@ -1,6 +1,7 @@
 FROM julia:1.5.2-buster
 
-COPY . /app
+COPY . /usr/app
+WORKDIR /usr/app
 
 ENV PYTHON=
 
@@ -25,12 +26,10 @@ ENV PYTHON=
 # RUN julia --project=. -e 'using Pkg; Pkg.add("Query") ;' 
 # RUN julia --project=. -e 'using Pkg; Pkg.add("PyCall") ;' 
 # RUN julia --project=. -e 'using Pkg; Pkg.add("Tables");'
-
-# RUN julia -e "using Pkg;  pkg\"instantiate\"; pkg\"precompile\";"
-RUN julia --project=app -e "using Pkg;  pkg\"instantiate\" ; pkg\"build\" ; pkg\"precompile\";"
-RUN julia --project=app -e "using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
+RUN julia --project -e  "using Pkg;  pkg\"instantiate\"; pkg\"precompile\";"
+RUN julia --project -e  "using Conda; Conda.add(\"pandas\", Conda.ROOTENV); Conda.add(\"numpy\", Conda.ROOTENV); Conda.add(\"requests\", Conda.ROOTENV); Conda.add(\"termcolor\", Conda.ROOTENV);"
 
 # EXPOSE 8000
 
-CMD ["julia", "--project=app", "/app/src/app.jl", "--serve"]
+CMD ["julia",  "--project", "src/app.jl", "--serve"]
 # ENTRYPOINT ["julia", "--project",  "src/app.jl"]

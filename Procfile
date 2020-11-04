@@ -1,1 +1,1 @@
-web: julia --project=. src/app.jl --serve
+web: julia src/app.jl --serve $PORT

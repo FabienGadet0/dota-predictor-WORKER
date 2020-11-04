@@ -1,36 +1,38 @@
 
 using Pkg
 
-metadata_packages = [
-    "CSV",
-    "DataFrames",
-    "DotEnv",
-    "IterTools",
-    # "HTTP",
-    "LibPQ",
-    "Missings",
-    "DataFramesMeta",
-    "ArgParse",
-    "Match",
-    "Conda",
-    "Query",
-    "Tables",
-    "PyCall",
-    "MLJ",
-    "MLJScikitLearnInterface"
-]
+# metadata_packages = [
+#     "CSV",
+#     "DataFrames",
+#     "DotEnv",
+#     "IterTools",
+#     # "HTTP",
+#     "LibPQ",
+#     "Missings",
+#     "DataFramesMeta",
+#     "ArgParse",
+#     "Match",
+#     "Conda",
+#     "Query",
+#     "Tables",
+#     "PyCall",
+#     "MLJ",
+#     "MLJScikitLearnInterface"
+# ]
 
-Pkg.update()
+# Pkg.update()
 
-for package = metadata_packages
-    Pkg.add(package)
-end
+# for package = metadata_packages
+#     Pkg.add(package)
+# end
 
+Pkg.add("PyCall")
+Pkg.add("Conda")
+Pkg.instantiate()
 
 import Conda
 
 
-Pkg.resolve()
 
 
 Conda.add("pandas", Conda.ROOTENV)
@@ -40,7 +42,6 @@ Conda.add("termcolor", Conda.ROOTENV)
 
 
 # Pkg.build("PyCall")
-Pkg.instantiate()
 
 using DotEnv, ArgParse,  Match, DataFrames, CSV , Query, LibPQ, DataFramesMeta, PyCall
 
