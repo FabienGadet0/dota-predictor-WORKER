@@ -1,4 +1,4 @@
-include("packageInstall.jl") 
+# include("packageInstall.jl") 
 include("postgresWrapper.jl") 
 include("callScripts.jl")
 include("generator.jl")
