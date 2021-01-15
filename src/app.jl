@@ -1,4 +1,15 @@
 # include("packageInstall.jl") 
+import Conda
+
+
+
+
+Conda.add("pandas", Conda.ROOTENV)
+Conda.add("numpy", Conda.ROOTENV)
+Conda.add("requests", Conda.ROOTENV)
+Conda.add("termcolor", Conda.ROOTENV)
+
+
 include("postgresWrapper.jl") 
 include("callScripts.jl")
 include("generator.jl")

@@ -1,1 +1,1 @@
-web: julia src/app.jl --serve $PORT
+web: julia/usr/bin/julia src/app.jl --serve $PORT
