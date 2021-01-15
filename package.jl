@@ -25,9 +25,10 @@ Pkg.update()
 for package = metadata_packages
     Pkg.add(package)
 end
-
 Pkg.add("PyCall")
 Pkg.add("Conda")
+
+Pkg.build("PyCall")
 Pkg.instantiate()
 
 import Conda
