@@ -1,30 +1,30 @@
 
 using Pkg
 
-# metadata_packages = [
-#     "CSV",
-#     "DataFrames",
-#     "DotEnv",
-#     "IterTools",
-#     # "HTTP",
-#     "LibPQ",
-#     "Missings",
-#     "DataFramesMeta",
-#     "ArgParse",
-#     "Match",
-#     "Conda",
-#     "Query",
-#     "Tables",
-#     "PyCall",
-#     "MLJ",
-#     "MLJScikitLearnInterface"
-# ]
+metadata_packages = [
+    "CSV",
+    "DataFrames",
+    "DotEnv",
+    "IterTools",
+    # "HTTP",
+    "LibPQ",
+    "Missings",
+    "DataFramesMeta",
+    "ArgParse",
+    "Match",
+    "Conda",
+    "Query",
+    "Tables",
+    "PyCall",
+    "MLJ",
+    "MLJScikitLearnInterface"
+]
 
-# Pkg.update()
+Pkg.update()
 
-# for package = metadata_packages
-#     Pkg.add(package)
-# end
+for package = metadata_packages
+    Pkg.add(package)
+end
 
 Pkg.add("PyCall")
 Pkg.add("Conda")
