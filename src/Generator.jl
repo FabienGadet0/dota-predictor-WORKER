@@ -1,13 +1,8 @@
-using DataFrames, DotEnv, DataFramesMeta
-
 module generator
-
     include("postgresWrapper.jl")
     include("callScripts.jl")
-
-
     import Query
-    using .postgresWrapper, .callScripts, DataFrames
+    using .postgresWrapper, .callScripts, DataFrames, DotEnv
 
 function call_generate_meta()
     callScripts.csv_generator.generate_meta()

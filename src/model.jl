@@ -15,11 +15,11 @@ _countmissings(df) = DataFrame(zip(names(df), colwise(x -> sum(ismissing.(x)), d
 # * Preprocess ####################################################################
 
 function getPredictions(db)
-    postgresWrapper.execQueryFromFile(db, "queries/get_new_predictions.sql")[Not([:fill_na, :winner_name])]
+    select(postgresWrapper.execQueryFromFile(db, "queries/get_new_predictions.sql"), Not([:fill_na, :winner_name]))
 end
 
 function getLastWeekDataForTrain(db)
-    postgresWrapper.execQueryFromFile(db, "queries/get_last_week_games.sql")[Not(:fill_na)]
+    select(postgresWrapper.execQueryFromFile(db, "queries/get_last_week_games.sql"), Not(:fill_na))
 end
 
 
@@ -85,7 +85,8 @@ end
 function getDfReadyForModel(modelName, df, addFeatures=[])
     features = loadSettings(modelName)["features"]
     if !isnothing(features)
-        return @linq df |> select(vcat(features, addFeatures)) |> cleanData
+        t = df[!, vcat(features, addFeatures)]
+        return cleanData(t)
     end
     return nothing
 end
@@ -135,19 +136,18 @@ function predictForEach(df=DataFrame(), returnValues=false)
     if nrow(df) == 0
         df = getPredictions(db)
     end
-
     if nrow(df) > 0 && length(models) > 0
-        X = df[Not(:match_id)]
+        X = select(df, Not(:match_id))
         for modelName in models
             tmp = DataFrame()
             toPredict = getDfReadyForModel(modelName, df, ["match_id"])
-            X = toPredict[Not(:match_id)]
+            X = select(toPredict, Not(:match_id))
             if nrow(toPredict) > 0
                 p = pred(modelName, X)
                 tmp["predict_name"] = p[1]
                 tmp["predict_proba"] = p[2]
                 tmp["model_name"] = modelName
-                tmp["match_id"] = toPredict["match_id"]
+                tmp["match_id"] = toPredict[!,"match_id"]
                 results = vcat(tmp, results)
             end
         end

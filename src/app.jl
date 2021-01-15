@@ -8,6 +8,7 @@ include("server.jl")
 
 
 using DotEnv,  .postgresWrapper, ArgParse, .callScripts, Match, DataFrames, .generator, Dates, .model, .server
+using CSV
 DotEnv.config()
 
 function parse_commandline()
@@ -46,11 +47,11 @@ function handle_commands(arg, value)
     ("generate-live", b::Bool)          => b ? generator.call_generate_live()                                   : nothing
     ("predict-all", b::Bool)            => b ? model.predictForEach()                                           : nothing
     ("generate-and-predict", b::Bool)   => b ? generateAllAndPredict()                                          : nothing
-    ("train-all", b::Bool)              => (b && Dates.dayofweek(now()) == 1) ? model.trainAll!()               : nothing
+    ("train-all", b::Bool)              => (b && Dates.dayofweek(now()) == 2) ? model.trainAll!()               : nothing
     ("serve", b::Bool)                  => b ? server.runServer()                                               : nothing
     bad                                 => println("Unknown argument: $bad")
     end
-    end
+end
 
 function generateAllAndPredict()
     generator.call_generate_games(1)

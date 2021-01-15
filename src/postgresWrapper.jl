@@ -1,8 +1,8 @@
 module postgresWrapper
 
 import Query
-using IterTools, Tables, DataFramesMeta, DataFrames , Dates
-using LibPQ
+using IterTools, Tables, DataFrames , Dates, DataFramesMeta
+using LibPQ, CSV
 
 const COLUMNS_TO_CHANGE = Dict{String,String}("last_update_time" => "start_date", "start_time" => "start_date") 
 const COLUMNS_TO_CONVERT_TO_INT = ["dire_score", "radiant_score", "first_blood_time", "duration", "radiant_score" , "duration", "match_id"]
@@ -21,7 +21,7 @@ const TECHNICAL_DATA_COLUMNS = ["dire_team_heroes_meta_points"
 ,"radiant_team_winrate"
 ,"dire_team_winrate_with"
 ,"radiant_team_winrate_with"
-,"dire_team_winrate_againpst"
+,"dire_team_winrate_against"
 ,"radiant_team_winrate_against"
 ,"dire_team_rating"
 ,"first_blood_time"
@@ -36,8 +36,11 @@ struct dbClass
 end
 
 
+_countmissings(df) = DataFrame(zip(names(df), colwise(x -> sum(ismissing.(x)), df)))
+
+
 function DbConstructor()
-    return dbClass(LibPQ.Connection(ENV["CONNECTION_STRING"]))
+    return dbClass(LibPQ.Connection(get(ENV, "CONNECTION_STRING", missing)))
 end
 
 function execQuery(db::dbClass, query::String)
@@ -103,31 +106,32 @@ function write(db::dbClass, df, tableName, timestamp_col="", onConflict="")
     _prepare_field(x::Missing) = ""
     _prepare_field(x::AbstractString) = string(replace(x, "\'" => " \""))
 
-    params = join(names(df), ',')
-    toInsert = dropmissing(_prepare_field(df), [:match_id])
-    valuesPlaceholder = chop(join(["\$" * string(x) * ',' for x in 1:length(names(df))]))
-    if nrow(toInsert) > 0
-        execute(db.conn, "BEGIN;")
-        LibPQ.load!(
-        toInsert,
-        db.conn,
-        "INSERT INTO $tableName ($params) VALUES ($valuesPlaceholder) $onConflict ;")
-        execute(db.conn, "COMMIT;")
-        nrow(toInsert)
+    if nrow(df) > 0
+        params = join(names(df), ',')
+        toInsert = dropmissing(_prepare_field(df), [:match_id])
+        valuesPlaceholder = chop(join(["\$" * string(x) * ',' for x in 1:length(names(df))]))
+        if nrow(toInsert) > 0
+            execute(db.conn, "BEGIN;")
+            LibPQ.load!(
+            toInsert,
+            db.conn,
+            "INSERT INTO $tableName ($params) VALUES ($valuesPlaceholder) $onConflict ;")
+            execute(db.conn, "COMMIT;")
+            nrow(toInsert)
+        end
     end
 end
 
-
-function close(db::dbClass)
+    function close(db::dbClass)
     LibPQ.close(db.conn)
 end
 
-function get_all_new_prediction(db)
+    function get_all_new_prediction(db)
     df = execQuery(db, query)
 end
 
 function file_to_db(db::dbClass, path_to_csv::String)
-    df = @linq CSV.read(path_to_csv) |> DataFrame
+    df = CSV.read(path_to_csv, DataFrame)
     if nrow(df) == 0
         @warn "$path_to_csv is empty, nothing to insert"
         return nothing
@@ -135,7 +139,7 @@ function file_to_db(db::dbClass, path_to_csv::String)
     df = @linq df |> unique(:match_id)
     # ? Rename columns using the const dict upper (COLUMNS_TO_CHANGE)
     map(column -> column in keys(COLUMNS_TO_CHANGE) ? rename!(df, column => COLUMNS_TO_CHANGE[column]) : nothing, names(df))
-    map(column -> column in COLUMNS_TO_CONVERT_TO_INT && sum(ismissing.(df[column])) == 0 ? df[!,column] = convert.(Int64, df[!,column]) : df[!,column], names(df))
+    map(column -> column in COLUMNS_TO_CONVERT_TO_INT && sum(ismissing.(df[!,column])) == 0 ? df[!,column] = convert.(Int64, df[!,column]) : df[!,column], names(df))
 
     df = @linq df  |> dropmissing(["match_id", "dire_team", "radiant_team"])
     # ? Get the available columns
@@ -143,14 +147,13 @@ function file_to_db(db::dbClass, path_to_csv::String)
     technical_data_columns = intersect(names(df), TECHNICAL_DATA_COLUMNS)
 
 
-    games = @linq df |> select(games_columns) 
+    games = df[!,games_columns]
 
     if "winner" in names(games)
-        games["winner_name"] = ("winner" in names(games) && games["winner"] === "dire_team") ? games["dire_team"] : games["radiant_team"]
+        games[!,"winner_name"] = ("winner" in names(games) && games[!,"winner"] === "dire_team") ? games[!,"dire_team"] : games[!,"radiant_team"]
     end
 
-    technical_data = @linq df |> 
-        select(technical_data_columns)
+    technical_data = df[!,technical_data_columns]
 
     # games["inserted_date"] = now()
     postgresWrapper.write(db, technical_data, "technical_data", "inserted_date", "ON CONFLICT DO NOTHING")

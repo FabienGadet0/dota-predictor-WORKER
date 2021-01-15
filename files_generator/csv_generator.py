@@ -300,3 +300,6 @@ def generate_games(days_ago=5, to_scrap=0, start_at_match_id=0):
 def generate_meta():
     l = Csv_generator(api_type='proMatches')
     l.generate_meta()
+
+
+# generate_games(days_ago=1)
